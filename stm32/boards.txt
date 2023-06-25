@@ -1,0 +1,139 @@
+# See: https://arduino.github.io/arduino-cli/latest/platform-specification/
+
+menu.pnum=Board part number
+menu.xserial=U(S)ART support
+menu.usb=USB support (if available)
+menu.xusb=USB speed (if available)
+menu.virtio=Virtual serial support
+menu.opt=Optimize
+menu.dbg=Debug symbols
+menu.rtlib=C Runtime Library
+menu.upload_method=Upload method
+################################################################################
+# Generic G0
+GenG0.name=Generic STM32G070 Series
+
+GenG0.build.core=arduino
+GenG0.build.board=GenG0
+GenG0.build.mcu=cortex-m0plus
+GenG0.build.series=STM32G0xx
+GenG0.build.cmsis_lib_gcc=arm_cortexM0l_math
+GenG0.build.extra_flags=-D{build.product_line} {build.enable_usb} {build.xSerial} -D__CORTEX_SC=0
+
+# Generic G070CBTx
+GenG0.menu.pnum.GENERIC_G070CBTX=Generic G070CBTx
+GenG0.menu.pnum.GENERIC_G070CBTX.upload.maximum_size=131072
+GenG0.menu.pnum.GENERIC_G070CBTX.upload.maximum_data_size=36864
+GenG0.menu.pnum.GENERIC_G070CBTX.build.board=GENERIC_G070CBTX
+GenG0.menu.pnum.GENERIC_G070CBTX.build.product_line=STM32G070xx
+GenG0.menu.pnum.GENERIC_G070CBTX.build.variant=STM32G0xx/G070CBT
+
+# Generic G070KBTx
+GenG0.menu.pnum.GENERIC_G070KBTX=Generic G070KBTx
+GenG0.menu.pnum.GENERIC_G070KBTX.upload.maximum_size=131072
+GenG0.menu.pnum.GENERIC_G070KBTX.upload.maximum_data_size=36864
+GenG0.menu.pnum.GENERIC_G070KBTX.build.board=GENERIC_G070KBTX
+GenG0.menu.pnum.GENERIC_G070KBTX.build.product_line=STM32G070xx
+GenG0.menu.pnum.GENERIC_G070KBTX.build.variant=STM32G0xx/G070KBT
+
+# Generic G070RBTx
+GenG0.menu.pnum.GENERIC_G070RBTX=Generic G070RBTx
+GenG0.menu.pnum.GENERIC_G070RBTX.upload.maximum_size=131072
+GenG0.menu.pnum.GENERIC_G070RBTX.upload.maximum_data_size=36864
+GenG0.menu.pnum.GENERIC_G070RBTX.build.board=GENERIC_G070RBTX
+GenG0.menu.pnum.GENERIC_G070RBTX.build.product_line=STM32G070xx
+GenG0.menu.pnum.GENERIC_G070RBTX.build.variant=STM32G0xx/G070RBT
+
+# TechStudio G070 Pro G070CBTx
+GenG0.menu.pnum.TECHSTUDIO_G070_PRO=TechStudio G070 Pro
+GenG0.menu.pnum.TECHSTUDIO_G070_PRO.upload.maximum_size=131072
+GenG0.menu.pnum.TECHSTUDIO_G070_PRO.upload.maximum_data_size=36864
+GenG0.menu.pnum.TECHSTUDIO_G070_PRO.build.board=TECHSTUDIO_G070_PRO
+GenG0.menu.pnum.TECHSTUDIO_G070_PRO.build.product_line=STM32G070xx
+GenG0.menu.pnum.TECHSTUDIO_G070_PRO.build.variant=STM32G0xx/G070CBT
+GenG0.menu.pnum.TECHSTUDIO_G070_PRO.build.variant_h=variant_{build.board}.h
+
+# TechStudio G070 Lite G070KBTx
+GenG0.menu.pnum.TECHSTUDIO_G070_LITE=TechStudio G070 Lite
+GenG0.menu.pnum.TECHSTUDIO_G070_LITE.upload.maximum_size=131072
+GenG0.menu.pnum.TECHSTUDIO_G070_LITE.upload.maximum_data_size=36864
+GenG0.menu.pnum.TECHSTUDIO_G070_LITE.build.board=TECHSTUDIO_G070_LITE
+GenG0.menu.pnum.TECHSTUDIO_G070_LITE.build.product_line=STM32G070xx
+GenG0.menu.pnum.TECHSTUDIO_G070_LITE.build.variant=STM32G0xx/G070KBT
+GenG0.menu.pnum.TECHSTUDIO_G070_LITE.build.variant_h=variant_{build.board}.h
+
+# PalmTop
+GenG0.menu.pnum.PALMTOP=PalmTop
+GenG0.menu.pnum.PALMTOP.upload.maximum_size=131072
+GenG0.menu.pnum.PALMTOP.upload.maximum_data_size=36864
+GenG0.menu.pnum.PALMTOP.build.board=PALMTOP
+GenG0.menu.pnum.PALMTOP.build.product_line=STM32G070xx
+GenG0.menu.pnum.PALMTOP.build.variant=STM32G0xx/G070CBT
+GenG0.menu.pnum.PALMTOP.build.variant_h=variant_{build.board}.h
+################################################################################
+# Upload menu
+GenG0.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
+GenG0.menu.upload_method.swdMethod.upload.protocol=0
+GenG0.menu.upload_method.swdMethod.upload.options=-g
+GenG0.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
+
+GenG0.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
+GenG0.menu.upload_method.serialMethod.upload.protocol=1
+GenG0.menu.upload_method.serialMethod.upload.options={serial.port.file} -s
+GenG0.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
+
+GenG0.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
+GenG0.menu.upload_method.dfuMethod.upload.protocol=2
+GenG0.menu.upload_method.dfuMethod.upload.options=-g
+GenG0.menu.upload_method.dfuMethod.upload.tool=stm32CubeProg
+
+# Serialx activation
+GenG0.menu.xserial.generic=Enabled (generic 'Serial')
+GenG0.menu.xserial.none=Enabled (no generic 'Serial')
+GenG0.menu.xserial.none.build.xSerial=-DHAL_UART_MODULE_ENABLED -DHWSERIAL_NONE
+GenG0.menu.xserial.disabled=Disabled (no Serial support)
+GenG0.menu.xserial.disabled.build.xSerial=
+
+# USB connectivity
+GenG0.menu.usb.none=None
+GenG0.menu.usb.CDCgen=CDC (generic 'Serial' supersede U(S)ART)
+GenG0.menu.usb.CDCgen.build.enable_usb={build.usb_flags} -DUSBD_USE_CDC
+GenG0.menu.usb.CDC=CDC (no generic 'Serial')
+GenG0.menu.usb.CDC.build.enable_usb={build.usb_flags} -DUSBD_USE_CDC -DDISABLE_GENERIC_SERIALUSB
+GenG0.menu.usb.HID=HID (keyboard and mouse)
+GenG0.menu.usb.HID.build.enable_usb={build.usb_flags} -DUSBD_USE_HID_COMPOSITE
+
+# Optimizations
+GenG0.menu.opt.osstd=Smallest (-Os default)
+GenG0.menu.opt.oslto=Smallest (-Os) with LTO
+GenG0.menu.opt.oslto.build.flags.optimize=-Os -flto
+GenG0.menu.opt.o1std=Fast (-O1)
+GenG0.menu.opt.o1std.build.flags.optimize=-O1
+GenG0.menu.opt.o1lto=Fast (-O1) with LTO
+GenG0.menu.opt.o1lto.build.flags.optimize=-O1 -flto
+GenG0.menu.opt.o2std=Faster (-O2)
+GenG0.menu.opt.o2std.build.flags.optimize=-O2
+GenG0.menu.opt.o2lto=Faster (-O2) with LTO
+GenG0.menu.opt.o2lto.build.flags.optimize=-O2 -flto
+GenG0.menu.opt.o3std=Fastest (-O3)
+GenG0.menu.opt.o3std.build.flags.optimize=-O3
+GenG0.menu.opt.o3lto=Fastest (-O3) with LTO
+GenG0.menu.opt.o3lto.build.flags.optimize=-O3 -flto
+GenG0.menu.opt.ogstd=Debug (-Og)
+GenG0.menu.opt.ogstd.build.flags.optimize=-Og
+
+# Debug information
+GenG0.menu.dbg.none=None
+GenG0.menu.dbg.enable=Enabled (-g)
+GenG0.menu.dbg.enable.build.flags.debug=-g
+
+# C Runtime Library
+GenG0.menu.rtlib.nano=Newlib Nano (default)
+GenG0.menu.rtlib.nanofp=Newlib Nano + Float Printf
+GenG0.menu.rtlib.nanofp.build.flags.ldspecs=--specs=nano.specs -u _printf_float
+GenG0.menu.rtlib.nanofs=Newlib Nano + Float Scanf
+GenG0.menu.rtlib.nanofs.build.flags.ldspecs=--specs=nano.specs -u _scanf_float
+GenG0.menu.rtlib.nanofps=Newlib Nano + Float Printf/Scanf
+GenG0.menu.rtlib.nanofps.build.flags.ldspecs=--specs=nano.specs -u _printf_float -u _scanf_float
+GenG0.menu.rtlib.full=Newlib Standard
+GenG0.menu.rtlib.full.build.flags.ldspecs=
