@@ -14,7 +14,7 @@ The Generic variants for G070KBT/G070CBT has been part of the Arduino Core STM32
 
 ## Installation
 
-- In order to use the custom board setting, you must have the STM32duino Arduino Core installed, if you don't have it installed yet, please follow the "Getting Started" instructions at https://github.com/stm32duino/wiki/wiki/Getting-Started to install the Arduino Core.
+- In order to use the custom board setting, you must have the STM32duino Arduino Core installed, if you don't have it installed yet, please follow the [Getting Started](https://github.com/stm32duino/wiki/wiki/Getting-Started) instructions to install the Arduino Core.
 
 - Quit the Arduino IDE.
 
