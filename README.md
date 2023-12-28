@@ -2,7 +2,7 @@
 
 This repo contains the board configuration for 
  * TechStudio G070 Boards
- * PalmTop board 
+ * [PalmTop](https://www.e-tinkers.com/2023/06/build-a-palmtop-handheld-with-stm32g070/) board 
 
 > For more details on the usage of these custom boards, please refer to [blog 
 post](https://www.e-tinkers.com/2023/06/build-a-palmtop-handheld-with-stm32g070-part-1/) on 
