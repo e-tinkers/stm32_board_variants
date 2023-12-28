@@ -10,7 +10,7 @@ e-tinkers.com.
 
 on Arudino IDE based on ST Microelectronics' official [Arduino Core STM32](https://github.com/stm32duino/Arduino_Core_STM32).
 
-The Generic variants for G070KBT/G070CBT has been part of the Arduino Core STM32 releasee version 2.3.0 based on TechStudio's [Pull Request](https://github.com/stm32duino/Arduino_Core_STM32/pull/1638).  For custom boards, this repository is required to be placed in hardware directory within Arduino IDE environment. This repository will no longer needed once those variants are added into STM32duino core.
+The Generic variants for G070KBT/G070CBT has been part of the Arduino Core STM32 releasee version 2.3.0 as per my [Pull Request](https://github.com/stm32duino/Arduino_Core_STM32/pull/1638) and is officially roll-in as part of the release 2.4.0.  For custom boards, this repository is required to be placed in hardware directory within Arduino IDE environment.
 
 ## Installation
 
