@@ -2,10 +2,10 @@
 
 This repo contains the board configuration for 
  * TechStudio G070 Boards
- * [PalmTop](https://www.e-tinkers.com/2023/06/build-a-palmtop-handheld-with-stm32g070/) board 
+ * [PalmTop](https://github.com/e-tinkers/palmtop) board 
 
 > For more details on the usage of these custom boards, please refer to [blog 
-post](https://www.e-tinkers.com/2023/06/build-a-palmtop-handheld-with-stm32g070-part-1/) on 
+post](https://www.e-tinkers.com/2023/06/build-a-palmtop-handheld-with-stm32g070) on 
 e-tinkers.com.
 
 on Arudino IDE based on ST Microelectronics' official [Arduino Core STM32](https://github.com/stm32duino/Arduino_Core_STM32).
