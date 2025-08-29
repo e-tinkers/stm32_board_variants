@@ -1,6 +1,6 @@
-# TechStudio G070 Boards Arduino IDE configuration
+# Custom STM32G070 Boards supports for Arduino IDE
 
-This repo contains the board configuration for 
+This repo contains custom board configuration for 
  * TechStudio G070 Boards
  * [PalmTop](https://github.com/e-tinkers/palmtop) board 
 
@@ -11,6 +11,8 @@ e-tinkers.com.
 on Arudino IDE based on ST Microelectronics' official [Arduino Core STM32](https://github.com/stm32duino/Arduino_Core_STM32).
 
 The Generic variants for G070KBT/G070CBT has been part of the Arduino Core STM32 releasee version 2.3.0 as per my [Pull Request](https://github.com/stm32duino/Arduino_Core_STM32/pull/1638) and is officially roll-in as part of the release 2.4.0.  For custom boards, this repository is required to be placed in hardware directory within Arduino IDE environment.
+
+**Update:** The core of the STM32 Arduino has been updated from v2.2.0 to v2.10.1 in 29 Aug, 2025.
 
 ## Installation
 
