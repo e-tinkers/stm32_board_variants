@@ -32,28 +32,30 @@ static PinName g_current_pin = NC;
 
 #ifndef ADC_SAMPLINGTIME
 #if defined(ADC_SAMPLETIME_8CYCLES_5)
-#define ADC_SAMPLINGTIME        ADC_SAMPLETIME_8CYCLES_5;
+#define ADC_SAMPLINGTIME        ADC_SAMPLETIME_8CYCLES_5
+#elif defined(ADC_SAMPLETIME_11CYCLES_5)
+#define ADC_SAMPLINGTIME        ADC_SAMPLETIME_11CYCLES_5
 #elif defined(ADC_SAMPLETIME_12CYCLES)
 #define ADC_SAMPLINGTIME        ADC_SAMPLETIME_12CYCLES;
 #elif defined(ADC_SAMPLETIME_12CYCLES_5)
-#define ADC_SAMPLINGTIME        ADC_SAMPLETIME_12CYCLES_5;
+#define ADC_SAMPLINGTIME        ADC_SAMPLETIME_12CYCLES_5
 #elif defined(ADC_SAMPLETIME_13CYCLES_5)
-#define ADC_SAMPLINGTIME        ADC_SAMPLETIME_13CYCLES_5;
+#define ADC_SAMPLINGTIME        ADC_SAMPLETIME_13CYCLES_5
 #elif defined(ADC_SAMPLETIME_15CYCLES)
-#define ADC_SAMPLINGTIME        ADC_SAMPLETIME_15CYCLES;
+#define ADC_SAMPLINGTIME        ADC_SAMPLETIME_15CYCLES
 #elif defined(ADC_SAMPLETIME_16CYCLES)
-#define ADC_SAMPLINGTIME        ADC_SAMPLETIME_16CYCLES;
+#define ADC_SAMPLINGTIME        ADC_SAMPLETIME_16CYCLES
 #elif defined(ADC_SAMPLETIME_19CYCLES_5)
-#define ADC_SAMPLINGTIME        ADC_SAMPLETIME_19CYCLES_5;
+#define ADC_SAMPLINGTIME        ADC_SAMPLETIME_19CYCLES_5
 #endif
 #endif /* !ADC_SAMPLINGTIME */
 
 #if defined(ADC_VER_V5_V90) && !defined(ADC3_SAMPLINGTIME)
-#define ADC3_SAMPLINGTIME       ADC3_SAMPLETIME_24CYCLES_5;
+#define ADC3_SAMPLINGTIME       ADC3_SAMPLETIME_24CYCLES_5
 #endif
 
 #if defined(ADC4_SAMPLETIME_19CYCLES_5) && !defined(ADC4_SAMPLINGTIME)
-#define ADC4_SAMPLINGTIME       ADC4_SAMPLETIME_19CYCLES_5;
+#define ADC4_SAMPLINGTIME       ADC4_SAMPLETIME_19CYCLES_5
 #endif
 
 /*
@@ -82,6 +84,10 @@ static PinName g_current_pin = NC;
 #define ADC_SAMPLINGTIME_INTERNAL ADC_SAMPLETIME_239CYCLES_5
 #elif defined(ADC_SAMPLETIME_160CYCLES_5)
 #define ADC_SAMPLINGTIME_INTERNAL ADC_SAMPLETIME_160CYCLES_5
+#elif defined(ADC_SAMPLETIME_814CYCLES_5)
+#define ADC_SAMPLINGTIME_INTERNAL ADC_SAMPLETIME_814CYCLES_5
+#elif defined(ADC_SAMPLETIME_1499CYCLES_5)
+#define ADC_SAMPLINGTIME_INTERNAL ADC_SAMPLETIME_1499CYCLES_5
 #else
 #error "ADC sampling time could not be defined for internal channels!"
 #endif
@@ -101,8 +107,14 @@ static PinName g_current_pin = NC;
 #define ADC_REGULAR_RANK_1  1
 #endif
 
-/* Private Functions */
-static uint32_t get_adc_channel(PinName pin, uint32_t *bank)
+/* Exported Functions */
+/**
+  * @brief  Return ADC HAL channel linked to a PinName
+  * @param  pin: PinName
+  * @param  bank: pointer to get ADC channel bank if required
+  * @retval Valid HAL channel
+  */
+uint32_t get_adc_channel(PinName pin, uint32_t *bank)
 {
   uint32_t function = pinmap_function(pin, PinMap_ADC);
   uint32_t channel = 0;
@@ -151,6 +163,7 @@ static uint32_t get_adc_channel(PinName pin, uint32_t *bank)
     case 13:
       channel = ADC_CHANNEL_13;
       break;
+#ifdef ADC_CHANNEL_14
     case 14:
       channel = ADC_CHANNEL_14;
       break;
@@ -185,6 +198,7 @@ static uint32_t get_adc_channel(PinName pin, uint32_t *bank)
     case 22:
       channel = ADC_CHANNEL_22;
       break;
+#ifdef ADC_CHANNEL_23
     case 23:
       channel = ADC_CHANNEL_23;
       break;
@@ -217,8 +231,10 @@ static uint32_t get_adc_channel(PinName pin, uint32_t *bank)
 #endif
 #endif
 #endif
+#endif
+#endif
     default:
-      channel = 0;
+      _Error_Handler("ADC: Unknown adc channel", (int)(STM_PIN_CHANNEL(function)));
       break;
   }
 #ifdef ADC_CHANNELS_BANK_B
@@ -233,7 +249,14 @@ static uint32_t get_adc_channel(PinName pin, uint32_t *bank)
   return channel;
 }
 
-static uint32_t get_adc_internal_channel(PinName pin)
+/**
+  * @brief  Return ADC HAL internal channel linked to a PinName
+  * @param  pin: specific PinName's for ADC internal. Value can be:
+  *         PADC_TEMP, PADC_TEMP_ADC5, PADC_VREF, PADC_VBAT
+  *         Note that not all of these values ​​may be available for all series.
+  * @retval Valid HAL internal channel.
+  */
+uint32_t get_adc_internal_channel(PinName pin)
 {
   uint32_t channel = 0;
   switch (pin) {
@@ -263,41 +286,20 @@ static uint32_t get_adc_internal_channel(PinName pin)
       break;
 #endif
     default:
-      channel = 0;
+      _Error_Handler("ADC: Unknown adc internal PiName", (int)(pin));
       break;
   }
   return channel;
 }
 #endif /* HAL_ADC_MODULE_ENABLED && !HAL_ADC_MODULE_ONLY */
 
-#if defined(HAL_TIM_MODULE_ENABLED) && !defined(HAL_TIM_MODULE_ONLY)
-uint32_t get_pwm_channel(PinName pin)
-{
-  uint32_t function = pinmap_function(pin, PinMap_TIM);
-  uint32_t channel = 0;
-  switch (STM_PIN_CHANNEL(function)) {
-    case 1:
-      channel = TIM_CHANNEL_1;
-      break;
-    case 2:
-      channel = TIM_CHANNEL_2;
-      break;
-    case 3:
-      channel = TIM_CHANNEL_3;
-      break;
-    case 4:
-      channel = TIM_CHANNEL_4;
-      break;
-    default:
-      channel = 0;
-      break;
-  }
-  return channel;
-}
-#endif /* HAL_TIM_MODULE_ENABLED && !HAL_TIM_MODULE_ONLY */
-
 #if defined(HAL_DAC_MODULE_ENABLED) && !defined(HAL_DAC_MODULE_ONLY)
-static uint32_t get_dac_channel(PinName pin)
+/**
+  * @brief  Return DAC HAL channel linked to a PinName
+  * @param  pin: specific PinName's for ADC internal.
+  * @retval Valid HAL channel
+  */
+uint32_t get_dac_channel(PinName pin)
 {
   uint32_t function = pinmap_function(pin, PinMap_DAC);
   uint32_t channel = 0;
@@ -316,7 +318,7 @@ static uint32_t get_dac_channel(PinName pin)
       break;
 #endif
     default:
-      channel = 0;
+      _Error_Handler("DAC: Unknown dac channel", (int)(STM_PIN_CHANNEL(function)));
       break;
   }
   return channel;
@@ -411,15 +413,37 @@ void dac_write_value(PinName pin, uint32_t value, uint8_t do_init)
     }
 
     dacChannelConf.DAC_Trigger = DAC_TRIGGER_NONE;
+#if defined(DISABLE_DAC_OUTPUTBUFFER)
+    dacChannelConf.DAC_OutputBuffer = DAC_OUTPUTBUFFER_DISABLE;
+#else
     dacChannelConf.DAC_OutputBuffer = DAC_OUTPUTBUFFER_ENABLE;
+#endif
 #if defined(DAC_OUTPUTSWITCH_ENABLE)
     dacChannelConf.DAC_OutputSwitch = DAC_OUTPUTSWITCH_ENABLE;
 #endif
     /*##-2- Configure DAC channel1 #############################################*/
+#if defined(STM32H5xx) && !defined(TIM8) && !defined(HAL_ICACHE_MODULE_DISABLED)
+    bool icache_enabled = false;
+    if (HAL_ICACHE_IsEnabled() == 1) {
+      icache_enabled = true;
+      /* Disable instruction cache prior to internal cacheable memory update */
+      if (HAL_ICACHE_Disable() != HAL_OK) {
+        Error_Handler();
+      }
+    }
+#endif /* STM32H5xx && !defined(TIM8) &&!HAL_ICACHE_MODULE_DISABLED */
     if (HAL_DAC_ConfigChannel(&DacHandle, &dacChannelConf, dacChannel) != HAL_OK) {
       /* Channel configuration Error */
       return;
     }
+#if defined(STM32H5xx) && !defined(TIM8) && !defined(HAL_ICACHE_MODULE_DISABLED)
+    if (icache_enabled) {
+      /* Re-enable instruction cache */
+      if (HAL_ICACHE_Enable() != HAL_OK) {
+        Error_Handler();
+      }
+    }
+#endif /* STM32H5xx && !defined(TIM8) && !HAL_ICACHE_MODULE_DISABLED */
   }
 
   /*##-3- Set DAC Channel1 DHR register ######################################*/
@@ -569,6 +593,7 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc)
 {
   /*##-1- Enable peripherals and GPIO Clocks #################################*/
   /* ADC Periph clock enable */
+#ifdef ADC1
   if (hadc->Instance == ADC1) {
 #ifdef __HAL_RCC_ADC1_CLK_ENABLE
     __HAL_RCC_ADC1_CLK_ENABLE();
@@ -577,8 +602,9 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc)
     __HAL_RCC_ADC12_CLK_ENABLE();
 #endif
   }
+#endif
 #ifdef ADC2
-  else if (hadc->Instance == ADC2) {
+  if (hadc->Instance == ADC2) {
 #ifdef __HAL_RCC_ADC2_CLK_ENABLE
     __HAL_RCC_ADC2_CLK_ENABLE();
 #endif
@@ -588,7 +614,7 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc)
   }
 #endif
 #ifdef ADC3
-  else if (hadc->Instance == ADC3) {
+  if (hadc->Instance == ADC3) {
 #ifdef __HAL_RCC_ADC3_CLK_ENABLE
     __HAL_RCC_ADC3_CLK_ENABLE();
 #endif
@@ -601,7 +627,7 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc)
   }
 #endif
 #ifdef ADC4
-  else if (hadc->Instance == ADC4) {
+  if (hadc->Instance == ADC4) {
 #ifdef __HAL_RCC_ADC4_CLK_ENABLE
     __HAL_RCC_ADC4_CLK_ENABLE();
 #endif
@@ -614,7 +640,7 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc)
   }
 #endif
 #ifdef ADC5
-  else if (hadc->Instance == ADC5) {
+  if (hadc->Instance == ADC5) {
 #if defined(ADC345_COMMON)
     __HAL_RCC_ADC345_CLK_ENABLE();
 #endif
@@ -653,6 +679,7 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef *hadc)
   __HAL_RCC_ADC_RELEASE_RESET();
 #endif
 
+#ifdef ADC1
   if (hadc->Instance == ADC1) {
 #ifdef __HAL_RCC_ADC1_FORCE_RESET
     __HAL_RCC_ADC1_FORCE_RESET();
@@ -673,8 +700,9 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef *hadc)
     __HAL_RCC_ADC12_CLK_DISABLE();
 #endif
   }
+#endif
 #ifdef ADC2
-  else if (hadc->Instance == ADC2) {
+  if (hadc->Instance == ADC2) {
 #ifdef __HAL_RCC_ADC2_FORCE_RESET
     __HAL_RCC_ADC2_FORCE_RESET();
 #endif
@@ -696,7 +724,7 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef *hadc)
   }
 #endif
 #ifdef ADC3
-  else if (hadc->Instance == ADC3) {
+  if (hadc->Instance == ADC3) {
 #ifdef __HAL_RCC_ADC3_FORCE_RESET
     __HAL_RCC_ADC3_FORCE_RESET();
 #endif
@@ -723,7 +751,7 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef *hadc)
   }
 #endif
 #ifdef ADC4
-  else if (hadc->Instance == ADC4) {
+  if (hadc->Instance == ADC4) {
 #ifdef __HAL_RCC_ADC4_FORCE_RESET
     __HAL_RCC_ADC4_FORCE_RESET();
 #endif
@@ -750,7 +778,7 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef *hadc)
   }
 #endif
 #ifdef ADC5
-  else if (hadc->Instance == ADC5) {
+  if (hadc->Instance == ADC5) {
 #if defined(ADC345_COMMON)
     __HAL_RCC_ADC345_FORCE_RESET();
     __HAL_RCC_ADC345_RELEASE_RESET();
@@ -787,6 +815,8 @@ uint16_t adc_read_value(PinName pin, uint32_t resolution)
 #else
     AdcHandle.Instance = ADC2;
 #endif
+#elif defined(STM32WBAxx)
+    AdcHandle.Instance = ADC4;
 #else
     AdcHandle.Instance = ADC1;
 #if defined(ADC5) && defined(ADC_CHANNEL_TEMPSENSOR_ADC5)
@@ -867,8 +897,9 @@ uint16_t adc_read_value(PinName pin, uint32_t resolution)
 #endif
 #if !defined(STM32F1xx) && !defined(STM32F2xx) && !defined(STM32F3xx) && \
     !defined(STM32F4xx) && !defined(STM32F7xx) && !defined(STM32G4xx) && \
-    !defined(STM32H7xx) && !defined(STM32L4xx) && !defined(STM32L5xx) && \
-    !defined(STM32MP1xx) && !defined(STM32WBxx)
+    !defined(STM32H5xx) && !defined(STM32H7xx) && !defined(STM32L4xx) &&  \
+    !defined(STM32L5xx) && !defined(STM32MP1xx) && !defined(STM32U3xx) && \
+    !defined(STM32WBxx) || defined(ADC_SUPPORT_2_5_MSPS)
   AdcHandle.Init.LowPowerAutoPowerOff  = DISABLE;                       /* ADC automatically powers-off after a conversion and automatically wakes-up when a new conversion is triggered */
 #endif
 #ifdef ADC_CHANNELS_BANK_B
@@ -881,8 +912,9 @@ uint16_t adc_read_value(PinName pin, uint32_t resolution)
   AdcHandle.Init.NbrOfConversion       = 1;                             /* Specifies the number of ranks that will be converted within the regular group sequencer. */
 #endif
   AdcHandle.Init.DiscontinuousConvMode = DISABLE;                       /* Parameter discarded because sequencer is disabled */
-#if !defined(STM32F0xx) && !defined(STM32G0xx) && !defined(STM32L0xx) && \
-    !defined(STM32WLxx)
+#if !defined(STM32C0xx) && !defined(STM32F0xx) && !defined(STM32G0xx) && \
+    !defined(STM32L0xx) && !defined(STM32U0xx) && !defined(STM32WBAxx) && \
+    !defined(STM32WLxx) && !defined(ADC_SUPPORT_2_5_MSPS)
   AdcHandle.Init.NbrOfDiscConversion   = 0;                             /* Parameter discarded because sequencer is disabled */
 #endif
   AdcHandle.Init.ExternalTrigConv      = ADC_SOFTWARE_START;            /* Software start to trig the 1st conversion manually, without external event */
@@ -890,7 +922,7 @@ uint16_t adc_read_value(PinName pin, uint32_t resolution)
   AdcHandle.Init.ExternalTrigConvEdge  = ADC_EXTERNALTRIGCONVEDGE_NONE; /* Parameter discarded because software trigger chosen */
 #endif
 #if !defined(STM32F1xx) && !defined(STM32H7xx) && !defined(STM32MP1xx) && \
-    !defined(ADC1_V2_5)
+    !defined(STM32U3xx) && !defined(ADC1_V2_5)
   AdcHandle.Init.DMAContinuousRequests = DISABLE;                       /* DMA one-shot mode selected (not applied to this example) */
 #endif
 #ifdef ADC_CONVERSIONDATA_DR
@@ -906,7 +938,8 @@ uint16_t adc_read_value(PinName pin, uint32_t resolution)
 #if defined(STM32F0xx)
   AdcHandle.Init.SamplingTimeCommon    = samplingTime;
 #endif
-#if defined(STM32G0xx)
+#if defined(STM32C0xx) || defined(STM32G0xx) || defined(STM32U0xx) || defined(STM32U5xx) || \
+    defined(STM32WBAxx) || defined(STM32WLxx) || defined(ADC_SUPPORT_2_5_MSPS)
   AdcHandle.Init.SamplingTimeCommon1   = samplingTime;              /* Set sampling time common to a group of channels. */
   AdcHandle.Init.SamplingTimeCommon2   = samplingTime;              /* Set sampling time common to a group of channels, second common setting possible.*/
 #endif
@@ -916,7 +949,7 @@ uint16_t adc_read_value(PinName pin, uint32_t resolution)
 #endif
 #if !defined(STM32F0xx) && !defined(STM32F1xx) && !defined(STM32F2xx) && \
     !defined(STM32F3xx) && !defined(STM32F4xx) && !defined(STM32F7xx) && \
-    !defined(STM32L1xx)
+    !defined(STM32L1xx) && !defined(ADC_SUPPORT_2_5_MSPS)
   AdcHandle.Init.OversamplingMode      = DISABLE;
   /* AdcHandle.Init.Oversample ignore for STM32L0xx as oversampling disabled */
   /* AdcHandle.Init.Oversampling ignored for other as oversampling disabled */
@@ -944,8 +977,8 @@ uint16_t adc_read_value(PinName pin, uint32_t resolution)
 
   AdcChannelConf.Channel      = channel;                          /* Specifies the channel to configure into ADC */
 
-#if defined(STM32G4xx) || defined(STM32L4xx) || defined(STM32L5xx) || \
-    defined(STM32WBxx)
+#if defined(STM32G4xx) || defined(STM32H5xx) || defined(STM32L4xx) || \
+    defined(STM32L5xx) || defined(STM32U3xx) || defined(STM32WBxx)
   if (!IS_ADC_CHANNEL(&AdcHandle, AdcChannelConf.Channel)) {
 #else
   if (!IS_ADC_CHANNEL(AdcChannelConf.Channel)) {
@@ -968,10 +1001,10 @@ uint16_t adc_read_value(PinName pin, uint32_t resolution)
   AdcChannelConf.SingleDiff   = ADC_SINGLE_ENDED;                 /* Single-ended input channel */
   AdcChannelConf.OffsetNumber = ADC_OFFSET_NONE;                  /* No offset subtraction */
 #endif
-#if !defined(STM32F0xx) && !defined(STM32F1xx) && !defined(STM32F2xx) && \
-    !defined(STM32G0xx) && !defined(STM32L0xx) && !defined(STM32L1xx) && \
-    !defined(STM32WBxx) && !defined(STM32WLxx) && \
-    !defined(ADC1_V2_5)
+#if !defined(STM32C0xx) && !defined(STM32F0xx) && !defined(STM32F1xx) && \
+    !defined(STM32F2xx) && !defined(STM32G0xx) && !defined(STM32L0xx) && \
+    !defined(STM32L1xx) && !defined(STM32U0xx) && !defined(STM32WBAxx) && \
+    !defined(STM32WBxx) && !defined(STM32WLxx) && !defined(ADC1_V2_5)
   AdcChannelConf.Offset = 0;                                      /* Parameter discarded because offset correction is disabled */
 #endif
 #if defined (STM32H7xx) || defined(STM32MP1xx)

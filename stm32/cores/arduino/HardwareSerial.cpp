@@ -30,7 +30,8 @@
 #if defined(HAVE_HWSERIAL1) || defined(HAVE_HWSERIAL2) || defined(HAVE_HWSERIAL3) ||\
   defined(HAVE_HWSERIAL4) || defined(HAVE_HWSERIAL5) || defined(HAVE_HWSERIAL6) ||\
   defined(HAVE_HWSERIAL7) || defined(HAVE_HWSERIAL8) || defined(HAVE_HWSERIAL9) ||\
-  defined(HAVE_HWSERIAL10) || defined(HAVE_HWSERIALLP1) || defined(HAVE_HWSERIALLP2)
+  defined(HAVE_HWSERIAL10) || defined(HAVE_HWSERIALLP1) || defined(HAVE_HWSERIALLP2) ||\
+  defined(HAVE_HWSERIALLP3)
   // SerialEvent functions are weak, so when the user doesn't define them,
   // the linker just sets their address to 0 (which is checked below).
   #if defined(HAVE_HWSERIAL1)
@@ -112,17 +113,21 @@
     HardwareSerial SerialLP2(LPUART2);
     void serialEventLP2() __attribute__((weak));
   #endif
+  #if defined(HAVE_HWSERIALLP3)
+    HardwareSerial SerialLP2(LPUART3);
+    void serialEventLP3() __attribute__((weak));
+  #endif
 #endif // HAVE_HWSERIALx
 
 // Constructors ////////////////////////////////////////////////////////////////
-HardwareSerial::HardwareSerial(uint32_t _rx, uint32_t _tx)
+HardwareSerial::HardwareSerial(uint32_t _rx, uint32_t _tx, uint32_t _rts, uint32_t _cts)
 {
-  init(digitalPinToPinName(_rx), digitalPinToPinName(_tx));
+  init(digitalPinToPinName(_rx), digitalPinToPinName(_tx), digitalPinToPinName(_rts), digitalPinToPinName(_cts));
 }
 
-HardwareSerial::HardwareSerial(PinName _rx, PinName _tx)
+HardwareSerial::HardwareSerial(PinName _rx, PinName _tx, PinName _rts, PinName _cts)
 {
-  init(_rx, _tx);
+  init(_rx, _tx, _rts, _cts);
 }
 
 HardwareSerial::HardwareSerial(void *peripheral, HalfDuplexMode_t halfDuplex)
@@ -132,12 +137,14 @@ HardwareSerial::HardwareSerial(void *peripheral, HalfDuplexMode_t halfDuplex)
   // If Serial is defined in variant set
   // the Rx/Tx pins for com port if defined
 #if defined(Serial) && defined(PIN_SERIAL_TX)
+#if !defined(USBCON) || defined(USBD_USE_CDC) && defined(DISABLE_GENERIC_SERIALUSB)
   if ((void *)this == (void *)&Serial) {
 #if defined(PIN_SERIAL_RX)
     setRx(PIN_SERIAL_RX);
 #endif
     setTx(PIN_SERIAL_TX);
   } else
+#endif
 #endif
 #if defined(PIN_SERIAL1_TX) && defined(USART1_BASE)
     if (peripheral == USART1) {
@@ -265,11 +272,30 @@ HardwareSerial::HardwareSerial(void *peripheral, HalfDuplexMode_t halfDuplex)
                             setTx(PIN_SERIALLP2_TX);
                           } else
 #endif
-                            // else get the pins of the first peripheral occurrence in PinMap
-                          {
-                            _serial.pin_rx = pinmap_pin(peripheral, PinMap_UART_RX);
-                            _serial.pin_tx = pinmap_pin(peripheral, PinMap_UART_TX);
-                          }
+#if defined(PIN_SERIALLP3_TX) && defined(LPUART3_BASE)
+                            if (peripheral == LPUART2) {
+#if defined(PIN_SERIALLP3_RX)
+                              setRx(PIN_SERIALLP3_RX);
+#endif
+                              setTx(PIN_SERIALLP3_TX);
+                            } else
+#endif
+#if defined(PIN_SERIAL_TX)
+                              // If PIN_SERIAL_TX is defined but Serial is mapped on other peripheral
+                              // (usually SerialUSB) use the pins defined for specified peripheral
+                              // instead of the first one found
+                              if ((pinmap_peripheral(digitalPinToPinName(PIN_SERIAL_TX), PinMap_UART_TX) == peripheral)) {
+#if defined(PIN_SERIAL_RX)
+                                setRx(PIN_SERIAL_RX);
+#endif
+                                setTx(PIN_SERIAL_TX);
+                              } else
+#endif
+                              {
+                                // else get the pins of the first peripheral occurrence in PinMap
+                                _serial.pin_rx = pinmap_pin(peripheral, PinMap_UART_RX);
+                                _serial.pin_tx = pinmap_pin(peripheral, PinMap_UART_TX);
+                              }
   if (halfDuplex == HALF_DUPLEX_ENABLED) {
     _serial.pin_rx = NC;
   }
@@ -286,7 +312,7 @@ HardwareSerial::HardwareSerial(PinName _rxtx)
   init(NC, _rxtx);
 }
 
-void HardwareSerial::init(PinName _rx, PinName _tx)
+void HardwareSerial::init(PinName _rx, PinName _tx, PinName _rts, PinName _cts)
 {
   if (_rx == _tx) {
     _serial.pin_rx = NC;
@@ -294,6 +320,8 @@ void HardwareSerial::init(PinName _rx, PinName _tx)
     _serial.pin_rx = _rx;
   }
   _serial.pin_tx = _tx;
+  _serial.pin_rts = _rts;
+  _serial.pin_cts = _cts;
   _serial.rx_buff = _rx_buffer;
   _serial.rx_head = 0;
   _serial.rx_tail = 0;
@@ -426,7 +454,7 @@ void HardwareSerial::begin(unsigned long baud, byte config)
 void HardwareSerial::end()
 {
   // wait for transmission of outgoing data
-  flush();
+  flush(TX_TIMEOUT);
 
   uart_deinit(&_serial);
 
@@ -474,18 +502,28 @@ int HardwareSerial::availableForWrite(void)
 
 void HardwareSerial::flush()
 {
+  flush(0);
+}
+
+void HardwareSerial::flush(uint32_t timeout)
+{
   // If we have never written a byte, no need to flush. This special
   // case is needed since there is no way to force the TXC (transmit
   // complete) bit to 1 during initialization
-  if (!_written) {
-    return;
+  if (_written) {
+    uint32_t tickstart = HAL_GetTick();
+    while ((_serial.tx_head != _serial.tx_tail)) {
+      // the interrupt handler will free up space for us
+      // Only manage timeout if any
+      if ((timeout != 0) && ((HAL_GetTick() - tickstart) >= timeout)) {
+        // clear any transmit data
+        _serial.tx_head = _serial.tx_tail;
+        break;
+      }
+    }
+    // If we get here, nothing is queued anymore (DRIE is disabled) and
+    // the hardware finished transmission (TXC is set).
   }
-
-  while ((_serial.tx_head != _serial.tx_tail)) {
-    // nop, the interrupt handler will free up space for us
-  }
-  // If we get here, nothing is queued anymore (DRIE is disabled) and
-  // the hardware finished transmission (TXC is set).
 }
 
 size_t HardwareSerial::write(const uint8_t *buffer, size_t size)
@@ -573,6 +611,38 @@ void HardwareSerial::setRx(PinName _rx)
 void HardwareSerial::setTx(PinName _tx)
 {
   _serial.pin_tx = _tx;
+}
+
+void HardwareSerial::setRts(uint32_t _rts)
+{
+  _serial.pin_rts = digitalPinToPinName(_rts);
+}
+
+void HardwareSerial::setCts(uint32_t _cts)
+{
+  _serial.pin_cts = digitalPinToPinName(_cts);
+}
+
+void HardwareSerial::setRtsCts(uint32_t _rts, uint32_t _cts)
+{
+  _serial.pin_rts = digitalPinToPinName(_rts);
+  _serial.pin_cts = digitalPinToPinName(_cts);
+}
+
+void HardwareSerial::setRts(PinName _rts)
+{
+  _serial.pin_rts = _rts;
+}
+
+void HardwareSerial::setCts(PinName _cts)
+{
+  _serial.pin_cts = _cts;
+}
+
+void HardwareSerial::setRtsCts(PinName _rts, PinName _cts)
+{
+  _serial.pin_rts = _rts;
+  _serial.pin_cts = _cts;
 }
 
 void HardwareSerial::setHalfDuplex(void)
