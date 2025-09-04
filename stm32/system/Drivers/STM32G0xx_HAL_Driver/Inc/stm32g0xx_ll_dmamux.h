@@ -6,12 +6,13 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2018 STMicroelectronics.
-  * All rights reserved.
+  * <h2><center>&copy; Copyright (c) 2018 STMicroelectronics.
+  * All rights reserved.</center></h2>
   *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
+  * This software component is licensed by ST under BSD 3-Clause license,
+  * the "License"; You may not use this file except in compliance with the
+  * License. You may obtain a copy of the License at:
+  *                        opensource.org/licenses/BSD-3-Clause
   *
   ******************************************************************************
   */
@@ -429,8 +430,8 @@ extern "C" {
 
 /* Exported functions --------------------------------------------------------*/
 /** @defgroup DMAMUX_LL_Exported_Functions DMAMUX Exported Functions
-  * @{
-  */
+ * @{
+ */
 
 /** @defgroup DMAMUX_LL_EF_Configuration Configuration
   * @{
@@ -521,7 +522,7 @@ extern "C" {
   *         @arg @ref LL_DMAMUX_REQ_UCPD2_TX
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_SetRequestID(const DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel, uint32_t Request)
+__STATIC_INLINE void LL_DMAMUX_SetRequestID(DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel, uint32_t Request)
 {
   (void)(DMAMUXx);
   MODIFY_REG((DMAMUX1_Channel0 + Channel)->CCR, DMAMUX_CxCR_DMAREQ_ID, Request);
@@ -612,7 +613,7 @@ __STATIC_INLINE void LL_DMAMUX_SetRequestID(const DMAMUX_Channel_TypeDef *DMAMUX
   *         @arg @ref LL_DMAMUX_REQ_UCPD2_RX
   *         @arg @ref LL_DMAMUX_REQ_UCPD2_TX
   */
-__STATIC_INLINE uint32_t LL_DMAMUX_GetRequestID(const DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel)
+__STATIC_INLINE uint32_t LL_DMAMUX_GetRequestID(DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel)
 {
   (void)(DMAMUXx);
   return (uint32_t)(READ_BIT((DMAMUX1_Channel0 + Channel)->CCR, DMAMUX_CxCR_DMAREQ_ID));
@@ -642,7 +643,7 @@ __STATIC_INLINE uint32_t LL_DMAMUX_GetRequestID(const DMAMUX_Channel_TypeDef *DM
   * @param  RequestNb This parameter must be a value between Min_Data = 1 and Max_Data = 32.
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_SetSyncRequestNb(const DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel, uint32_t RequestNb)
+__STATIC_INLINE void LL_DMAMUX_SetSyncRequestNb(DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel, uint32_t RequestNb)
 {
   (void)(DMAMUXx);
   MODIFY_REG((DMAMUX1_Channel0 + Channel)->CCR, DMAMUX_CxCR_NBREQ, ((RequestNb - 1U) << DMAMUX_CxCR_NBREQ_Pos));
@@ -671,7 +672,7 @@ __STATIC_INLINE void LL_DMAMUX_SetSyncRequestNb(const DMAMUX_Channel_TypeDef *DM
   *         @arg @ref LL_DMAMUX_CHANNEL_11
   * @retval Between Min_Data = 1 and Max_Data = 32
   */
-__STATIC_INLINE uint32_t LL_DMAMUX_GetSyncRequestNb(const DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel)
+__STATIC_INLINE uint32_t LL_DMAMUX_GetSyncRequestNb(DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel)
 {
   (void)(DMAMUXx);
   return (uint32_t)(((READ_BIT((DMAMUX1_Channel0 + Channel)->CCR, DMAMUX_CxCR_NBREQ)) >> DMAMUX_CxCR_NBREQ_Pos) + 1U);
@@ -705,7 +706,7 @@ __STATIC_INLINE uint32_t LL_DMAMUX_GetSyncRequestNb(const DMAMUX_Channel_TypeDef
   *         @arg @ref LL_DMAMUX_SYNC_POL_RISING_FALLING
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_SetSyncPolarity(const DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel, uint32_t Polarity)
+__STATIC_INLINE void LL_DMAMUX_SetSyncPolarity(DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel, uint32_t Polarity)
 {
   (void)(DMAMUXx);
   MODIFY_REG((DMAMUX1_Channel0 + Channel)->CCR, DMAMUX_CxCR_SPOL, Polarity);
@@ -738,7 +739,7 @@ __STATIC_INLINE void LL_DMAMUX_SetSyncPolarity(const DMAMUX_Channel_TypeDef *DMA
   *         @arg @ref LL_DMAMUX_SYNC_POL_FALLING
   *         @arg @ref LL_DMAMUX_SYNC_POL_RISING_FALLING
   */
-__STATIC_INLINE uint32_t LL_DMAMUX_GetSyncPolarity(const DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel)
+__STATIC_INLINE uint32_t LL_DMAMUX_GetSyncPolarity(DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel)
 {
   (void)(DMAMUXx);
   return (uint32_t)(READ_BIT((DMAMUX1_Channel0 + Channel)->CCR, DMAMUX_CxCR_SPOL));
@@ -767,7 +768,7 @@ __STATIC_INLINE uint32_t LL_DMAMUX_GetSyncPolarity(const DMAMUX_Channel_TypeDef 
   *         @arg @ref LL_DMAMUX_CHANNEL_11
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_EnableEventGeneration(const DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel)
+__STATIC_INLINE void LL_DMAMUX_EnableEventGeneration(DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel)
 {
   (void)(DMAMUXx);
   SET_BIT((DMAMUX1_Channel0 + Channel)->CCR, DMAMUX_CxCR_EGE);
@@ -796,7 +797,7 @@ __STATIC_INLINE void LL_DMAMUX_EnableEventGeneration(const DMAMUX_Channel_TypeDe
   *         @arg @ref LL_DMAMUX_CHANNEL_11
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_DisableEventGeneration(const DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel)
+__STATIC_INLINE void LL_DMAMUX_DisableEventGeneration(DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel)
 {
   (void)(DMAMUXx);
   CLEAR_BIT((DMAMUX1_Channel0 + Channel)->CCR, DMAMUX_CxCR_EGE);
@@ -825,7 +826,7 @@ __STATIC_INLINE void LL_DMAMUX_DisableEventGeneration(const DMAMUX_Channel_TypeD
   *         @arg @ref LL_DMAMUX_CHANNEL_11
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMAMUX_IsEnabledEventGeneration(const DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel)
+__STATIC_INLINE uint32_t LL_DMAMUX_IsEnabledEventGeneration(DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel)
 {
   (void)(DMAMUXx);
   return ((READ_BIT((DMAMUX1_Channel0 + Channel)->CCR, DMAMUX_CxCR_EGE) == (DMAMUX_CxCR_EGE)) ? 1UL : 0UL);
@@ -854,7 +855,7 @@ __STATIC_INLINE uint32_t LL_DMAMUX_IsEnabledEventGeneration(const DMAMUX_Channel
   *         @arg @ref LL_DMAMUX_CHANNEL_11
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_EnableSync(const DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel)
+__STATIC_INLINE void LL_DMAMUX_EnableSync(DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel)
 {
   (void)(DMAMUXx);
   SET_BIT((DMAMUX1_Channel0 + Channel)->CCR, DMAMUX_CxCR_SE);
@@ -883,7 +884,7 @@ __STATIC_INLINE void LL_DMAMUX_EnableSync(const DMAMUX_Channel_TypeDef *DMAMUXx,
   *         @arg @ref LL_DMAMUX_CHANNEL_11
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_DisableSync(const DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel)
+__STATIC_INLINE void LL_DMAMUX_DisableSync(DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel)
 {
   (void)(DMAMUXx);
   CLEAR_BIT((DMAMUX1_Channel0 + Channel)->CCR, DMAMUX_CxCR_SE);
@@ -912,7 +913,7 @@ __STATIC_INLINE void LL_DMAMUX_DisableSync(const DMAMUX_Channel_TypeDef *DMAMUXx
   *         @arg @ref LL_DMAMUX_CHANNEL_11
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMAMUX_IsEnabledSync(const DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel)
+__STATIC_INLINE uint32_t LL_DMAMUX_IsEnabledSync(DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel)
 {
   (void)(DMAMUXx);
   return ((READ_BIT((DMAMUX1_Channel0 + Channel)->CCR, DMAMUX_CxCR_SE) == (DMAMUX_CxCR_SE)) ? 1UL : 0UL);
@@ -965,7 +966,7 @@ __STATIC_INLINE uint32_t LL_DMAMUX_IsEnabledSync(const DMAMUX_Channel_TypeDef *D
   *         @arg @ref LL_DMAMUX_SYNC_TIM14_OC
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_SetSyncID(const DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel, uint32_t SyncID)
+__STATIC_INLINE void LL_DMAMUX_SetSyncID(DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel, uint32_t SyncID)
 {
   (void)(DMAMUXx);
   MODIFY_REG((DMAMUX1_Channel0 + Channel)->CCR, DMAMUX_CxCR_SYNC_ID, SyncID);
@@ -1017,7 +1018,7 @@ __STATIC_INLINE void LL_DMAMUX_SetSyncID(const DMAMUX_Channel_TypeDef *DMAMUXx, 
   *         @arg @ref LL_DMAMUX_SYNC_LPTIM2_OUT
   *         @arg @ref LL_DMAMUX_SYNC_TIM14_OC
   */
-__STATIC_INLINE uint32_t LL_DMAMUX_GetSyncID(const DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel)
+__STATIC_INLINE uint32_t LL_DMAMUX_GetSyncID(DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel)
 {
   (void)(DMAMUXx);
   return (uint32_t)(READ_BIT((DMAMUX1_Channel0 + Channel)->CCR, DMAMUX_CxCR_SYNC_ID));
@@ -1034,11 +1035,10 @@ __STATIC_INLINE uint32_t LL_DMAMUX_GetSyncID(const DMAMUX_Channel_TypeDef *DMAMU
   *         @arg @ref LL_DMAMUX_REQ_GEN_3
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_EnableRequestGen(const DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t RequestGenChannel)
+__STATIC_INLINE void LL_DMAMUX_EnableRequestGen(DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t RequestGenChannel)
 {
   (void)(DMAMUXx);
-  SET_BIT(((DMAMUX_RequestGen_TypeDef *)((uint32_t)((uint32_t)DMAMUX1_RequestGenerator0 + (DMAMUX_RGCR_SIZE *
-                                                    (RequestGenChannel)))))->RGCR, DMAMUX_RGxCR_GE);
+  SET_BIT(((DMAMUX_RequestGen_TypeDef *)((uint32_t)((uint32_t)DMAMUX1_RequestGenerator0 + (DMAMUX_RGCR_SIZE * (RequestGenChannel)))))->RGCR, DMAMUX_RGxCR_GE);
 }
 
 /**
@@ -1052,11 +1052,10 @@ __STATIC_INLINE void LL_DMAMUX_EnableRequestGen(const DMAMUX_Channel_TypeDef *DM
   *         @arg @ref LL_DMAMUX_REQ_GEN_3
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_DisableRequestGen(const DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t RequestGenChannel)
+__STATIC_INLINE void LL_DMAMUX_DisableRequestGen(DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t RequestGenChannel)
 {
   (void)(DMAMUXx);
-  CLEAR_BIT(((DMAMUX_RequestGen_TypeDef *)((uint32_t)((uint32_t)DMAMUX1_RequestGenerator0 + (DMAMUX_RGCR_SIZE *
-                                                      (RequestGenChannel)))))->RGCR, DMAMUX_RGxCR_GE);
+  CLEAR_BIT(((DMAMUX_RequestGen_TypeDef *)((uint32_t)((uint32_t)DMAMUX1_RequestGenerator0 + (DMAMUX_RGCR_SIZE * (RequestGenChannel)))))->RGCR, DMAMUX_RGxCR_GE);
 }
 
 /**
@@ -1070,11 +1069,10 @@ __STATIC_INLINE void LL_DMAMUX_DisableRequestGen(const DMAMUX_Channel_TypeDef *D
   *         @arg @ref LL_DMAMUX_REQ_GEN_3
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMAMUX_IsEnabledRequestGen(const DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t RequestGenChannel)
+__STATIC_INLINE uint32_t LL_DMAMUX_IsEnabledRequestGen(DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t RequestGenChannel)
 {
   (void)(DMAMUXx);
-  return ((READ_BIT(((DMAMUX_RequestGen_TypeDef *)((uint32_t)((uint32_t)DMAMUX1_RequestGenerator0 + (DMAMUX_RGCR_SIZE *
-                                                              (RequestGenChannel)))))->RGCR, DMAMUX_RGxCR_GE) == (DMAMUX_RGxCR_GE)) ? 1UL : 0UL);
+  return ((READ_BIT(((DMAMUX_RequestGen_TypeDef *)((uint32_t)((uint32_t)DMAMUX1_RequestGenerator0 + (DMAMUX_RGCR_SIZE * (RequestGenChannel)))))->RGCR, DMAMUX_RGxCR_GE) == (DMAMUX_RGxCR_GE)) ? 1UL : 0UL);
 }
 
 /**
@@ -1093,12 +1091,10 @@ __STATIC_INLINE uint32_t LL_DMAMUX_IsEnabledRequestGen(const DMAMUX_Channel_Type
   *         @arg @ref LL_DMAMUX_REQ_GEN_POL_RISING_FALLING
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_SetRequestGenPolarity(const DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t RequestGenChannel,
-                                                     uint32_t Polarity)
+__STATIC_INLINE void LL_DMAMUX_SetRequestGenPolarity(DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t RequestGenChannel, uint32_t Polarity)
 {
   (void)(DMAMUXx);
-  MODIFY_REG(((DMAMUX_RequestGen_TypeDef *)((uint32_t)((uint32_t)DMAMUX1_RequestGenerator0 + (DMAMUX_RGCR_SIZE *
-                                                       (RequestGenChannel)))))->RGCR, DMAMUX_RGxCR_GPOL, Polarity);
+  MODIFY_REG(((DMAMUX_RequestGen_TypeDef *)((uint32_t)((uint32_t)DMAMUX1_RequestGenerator0 + (DMAMUX_RGCR_SIZE * (RequestGenChannel)))))->RGCR, DMAMUX_RGxCR_GPOL, Polarity);
 }
 
 /**
@@ -1116,11 +1112,10 @@ __STATIC_INLINE void LL_DMAMUX_SetRequestGenPolarity(const DMAMUX_Channel_TypeDe
   *         @arg @ref LL_DMAMUX_REQ_GEN_POL_FALLING
   *         @arg @ref LL_DMAMUX_REQ_GEN_POL_RISING_FALLING
   */
-__STATIC_INLINE uint32_t LL_DMAMUX_GetRequestGenPolarity(const DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t RequestGenChannel)
+__STATIC_INLINE uint32_t LL_DMAMUX_GetRequestGenPolarity(DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t RequestGenChannel)
 {
   (void)(DMAMUXx);
-  return (uint32_t)(READ_BIT(((DMAMUX_RequestGen_TypeDef *)((uint32_t)((uint32_t)DMAMUX1_RequestGenerator0 +
-                                                            (DMAMUX_RGCR_SIZE * (RequestGenChannel)))))->RGCR, DMAMUX_RGxCR_GPOL));
+  return (uint32_t)(READ_BIT(((DMAMUX_RequestGen_TypeDef *)((uint32_t)((uint32_t)DMAMUX1_RequestGenerator0 + (DMAMUX_RGCR_SIZE * (RequestGenChannel)))))->RGCR, DMAMUX_RGxCR_GPOL));
 }
 
 /**
@@ -1136,12 +1131,10 @@ __STATIC_INLINE uint32_t LL_DMAMUX_GetRequestGenPolarity(const DMAMUX_Channel_Ty
   * @param  RequestNb This parameter must be a value between Min_Data = 1 and Max_Data = 32.
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_SetGenRequestNb(const DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t RequestGenChannel,
-                                               uint32_t RequestNb)
+__STATIC_INLINE void LL_DMAMUX_SetGenRequestNb(DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t RequestGenChannel, uint32_t RequestNb)
 {
   (void)(DMAMUXx);
-  MODIFY_REG(((DMAMUX_RequestGen_TypeDef *)((uint32_t)((uint32_t)DMAMUX1_RequestGenerator0 + (DMAMUX_RGCR_SIZE *
-                                                       (RequestGenChannel)))))->RGCR, DMAMUX_RGxCR_GNBREQ, (RequestNb - 1U) << DMAMUX_RGxCR_GNBREQ_Pos);
+  MODIFY_REG(((DMAMUX_RequestGen_TypeDef *)((uint32_t)((uint32_t)DMAMUX1_RequestGenerator0 + (DMAMUX_RGCR_SIZE * (RequestGenChannel)))))->RGCR, DMAMUX_RGxCR_GNBREQ, (RequestNb - 1U) << DMAMUX_RGxCR_GNBREQ_Pos);
 }
 
 /**
@@ -1155,11 +1148,10 @@ __STATIC_INLINE void LL_DMAMUX_SetGenRequestNb(const DMAMUX_Channel_TypeDef *DMA
   *         @arg @ref LL_DMAMUX_REQ_GEN_3
   * @retval Between Min_Data = 1 and Max_Data = 32
   */
-__STATIC_INLINE uint32_t LL_DMAMUX_GetGenRequestNb(const DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t RequestGenChannel)
+__STATIC_INLINE uint32_t LL_DMAMUX_GetGenRequestNb(DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t RequestGenChannel)
 {
   (void)(DMAMUXx);
-  return (uint32_t)((READ_BIT(((DMAMUX_RequestGen_TypeDef *)((uint32_t)((uint32_t)DMAMUX1_RequestGenerator0 +
-                                                             (DMAMUX_RGCR_SIZE * (RequestGenChannel)))))->RGCR, DMAMUX_RGxCR_GNBREQ) >> DMAMUX_RGxCR_GNBREQ_Pos) + 1U);
+  return (uint32_t)((READ_BIT(((DMAMUX_RequestGen_TypeDef *)((uint32_t)((uint32_t)DMAMUX1_RequestGenerator0 + (DMAMUX_RGCR_SIZE * (RequestGenChannel)))))->RGCR, DMAMUX_RGxCR_GNBREQ) >> DMAMUX_RGxCR_GNBREQ_Pos) + 1U);
 }
 
 /**
@@ -1197,12 +1189,10 @@ __STATIC_INLINE uint32_t LL_DMAMUX_GetGenRequestNb(const DMAMUX_Channel_TypeDef 
   *         @arg @ref LL_DMAMUX_REQ_GEN_TIM14_OC
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_SetRequestSignalID(const DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t RequestGenChannel,
-                                                  uint32_t RequestSignalID)
+__STATIC_INLINE void LL_DMAMUX_SetRequestSignalID(DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t RequestGenChannel, uint32_t RequestSignalID)
 {
   (void)(DMAMUXx);
-  MODIFY_REG(((DMAMUX_RequestGen_TypeDef *)((uint32_t)((uint32_t)DMAMUX1_RequestGenerator0 + (DMAMUX_RGCR_SIZE *
-                                                       (RequestGenChannel)))))->RGCR, DMAMUX_RGxCR_SIG_ID, RequestSignalID);
+  MODIFY_REG(((DMAMUX_RequestGen_TypeDef *)((uint32_t)((uint32_t)DMAMUX1_RequestGenerator0 + (DMAMUX_RGCR_SIZE * (RequestGenChannel)))))->RGCR, DMAMUX_RGxCR_SIG_ID, RequestSignalID);
 }
 
 /**
@@ -1239,11 +1229,10 @@ __STATIC_INLINE void LL_DMAMUX_SetRequestSignalID(const DMAMUX_Channel_TypeDef *
   *         @arg @ref LL_DMAMUX_REQ_GEN_LPTIM2_OUT
   *         @arg @ref LL_DMAMUX_REQ_GEN_TIM14_OC
   */
-__STATIC_INLINE uint32_t LL_DMAMUX_GetRequestSignalID(const DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t RequestGenChannel)
+__STATIC_INLINE uint32_t LL_DMAMUX_GetRequestSignalID(DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t RequestGenChannel)
 {
   (void)(DMAMUXx);
-  return (uint32_t)(READ_BIT(((DMAMUX_RequestGen_TypeDef *)((uint32_t)((uint32_t)DMAMUX1_RequestGenerator0 +
-                                                            (DMAMUX_RGCR_SIZE * (RequestGenChannel)))))->RGCR, DMAMUX_RGxCR_SIG_ID));
+  return (uint32_t)(READ_BIT(((DMAMUX_RequestGen_TypeDef *)((uint32_t)((uint32_t)DMAMUX1_RequestGenerator0 + (DMAMUX_RGCR_SIZE * (RequestGenChannel)))))->RGCR, DMAMUX_RGxCR_SIG_ID));
 }
 
 /**
@@ -1260,7 +1249,7 @@ __STATIC_INLINE uint32_t LL_DMAMUX_GetRequestSignalID(const DMAMUX_Channel_TypeD
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO0(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO0(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   return ((READ_BIT(DMAMUX1_ChannelStatus->CSR, DMAMUX_CSR_SOF0) == (DMAMUX_CSR_SOF0)) ? 1UL : 0UL);
@@ -1272,7 +1261,7 @@ __STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO0(const DMAMUX_Channel_TypeDef
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO1(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO1(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   return ((READ_BIT(DMAMUX1_ChannelStatus->CSR, DMAMUX_CSR_SOF1) == (DMAMUX_CSR_SOF1)) ? 1UL : 0UL);
@@ -1284,7 +1273,7 @@ __STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO1(const DMAMUX_Channel_TypeDef
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO2(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO2(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   return ((READ_BIT(DMAMUX1_ChannelStatus->CSR, DMAMUX_CSR_SOF2) == (DMAMUX_CSR_SOF2)) ? 1UL : 0UL);
@@ -1296,7 +1285,7 @@ __STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO2(const DMAMUX_Channel_TypeDef
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO3(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO3(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   return ((READ_BIT(DMAMUX1_ChannelStatus->CSR, DMAMUX_CSR_SOF3) == (DMAMUX_CSR_SOF3)) ? 1UL : 0UL);
@@ -1308,7 +1297,7 @@ __STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO3(const DMAMUX_Channel_TypeDef
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO4(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO4(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   return ((READ_BIT(DMAMUX1_ChannelStatus->CSR, DMAMUX_CSR_SOF4) == (DMAMUX_CSR_SOF4)) ? 1UL : 0UL);
@@ -1321,7 +1310,7 @@ __STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO4(const DMAMUX_Channel_TypeDef
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO5(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO5(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   return ((READ_BIT(DMAMUX1_ChannelStatus->CSR, DMAMUX_CSR_SOF5) == (DMAMUX_CSR_SOF5)) ? 1UL : 0UL);
@@ -1335,7 +1324,7 @@ __STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO5(const DMAMUX_Channel_TypeDef
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO6(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO6(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   return ((READ_BIT(DMAMUX1_ChannelStatus->CSR, DMAMUX_CSR_SOF6) == (DMAMUX_CSR_SOF6)) ? 1UL : 0UL);
@@ -1349,7 +1338,7 @@ __STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO6(const DMAMUX_Channel_TypeDef
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO7(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO7(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   return ((READ_BIT(DMAMUX1_ChannelStatus->CSR, DMAMUX_CSR_SOF7) == (DMAMUX_CSR_SOF7)) ? 1UL : 0UL);
@@ -1363,7 +1352,7 @@ __STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO7(const DMAMUX_Channel_TypeDef
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO8(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO8(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   return ((READ_BIT(DMAMUX1_ChannelStatus->CSR, DMAMUX_CSR_SOF8) == (DMAMUX_CSR_SOF8)) ? 1UL : 0UL);
@@ -1377,7 +1366,7 @@ __STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO8(const DMAMUX_Channel_TypeDef
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO9(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO9(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   return ((READ_BIT(DMAMUX1_ChannelStatus->CSR, DMAMUX_CSR_SOF9) == (DMAMUX_CSR_SOF9)) ? 1UL : 0UL);
@@ -1391,7 +1380,7 @@ __STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO9(const DMAMUX_Channel_TypeDef
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO10(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO10(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   return ((READ_BIT(DMAMUX1_ChannelStatus->CSR, DMAMUX_CSR_SOF10) == (DMAMUX_CSR_SOF10)) ? 1UL : 0UL);
@@ -1405,7 +1394,7 @@ __STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO10(const DMAMUX_Channel_TypeDe
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO11(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO11(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   return ((READ_BIT(DMAMUX1_ChannelStatus->CSR, DMAMUX_CSR_SOF11) == (DMAMUX_CSR_SOF11)) ? 1UL : 0UL);
@@ -1418,7 +1407,7 @@ __STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_SO11(const DMAMUX_Channel_TypeDe
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_RGO0(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_RGO0(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   return ((READ_BIT(DMAMUX1_RequestGenStatus->RGSR, DMAMUX_RGSR_OF0) == (DMAMUX_RGSR_OF0)) ? 1UL : 0UL);
@@ -1430,7 +1419,7 @@ __STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_RGO0(const DMAMUX_Channel_TypeDe
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_RGO1(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_RGO1(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   return ((READ_BIT(DMAMUX1_RequestGenStatus->RGSR, DMAMUX_RGSR_OF1) == (DMAMUX_RGSR_OF1)) ? 1UL : 0UL);
@@ -1442,7 +1431,7 @@ __STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_RGO1(const DMAMUX_Channel_TypeDe
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_RGO2(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_RGO2(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   return ((READ_BIT(DMAMUX1_RequestGenStatus->RGSR, DMAMUX_RGSR_OF2) == (DMAMUX_RGSR_OF2)) ? 1UL : 0UL);
@@ -1454,7 +1443,7 @@ __STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_RGO2(const DMAMUX_Channel_TypeDe
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_RGO3(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_RGO3(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   return ((READ_BIT(DMAMUX1_RequestGenStatus->RGSR, DMAMUX_RGSR_OF3) == (DMAMUX_RGSR_OF3)) ? 1UL : 0UL);
@@ -1466,7 +1455,7 @@ __STATIC_INLINE uint32_t LL_DMAMUX_IsActiveFlag_RGO3(const DMAMUX_Channel_TypeDe
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_ClearFlag_SO0(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE void LL_DMAMUX_ClearFlag_SO0(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   SET_BIT(DMAMUX1_ChannelStatus->CFR, DMAMUX_CFR_CSOF0);
@@ -1478,7 +1467,7 @@ __STATIC_INLINE void LL_DMAMUX_ClearFlag_SO0(const DMAMUX_Channel_TypeDef *DMAMU
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_ClearFlag_SO1(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE void LL_DMAMUX_ClearFlag_SO1(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   SET_BIT(DMAMUX1_ChannelStatus->CFR, DMAMUX_CFR_CSOF1);
@@ -1490,7 +1479,7 @@ __STATIC_INLINE void LL_DMAMUX_ClearFlag_SO1(const DMAMUX_Channel_TypeDef *DMAMU
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_ClearFlag_SO2(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE void LL_DMAMUX_ClearFlag_SO2(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   SET_BIT(DMAMUX1_ChannelStatus->CFR, DMAMUX_CFR_CSOF2);
@@ -1502,7 +1491,7 @@ __STATIC_INLINE void LL_DMAMUX_ClearFlag_SO2(const DMAMUX_Channel_TypeDef *DMAMU
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_ClearFlag_SO3(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE void LL_DMAMUX_ClearFlag_SO3(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   SET_BIT(DMAMUX1_ChannelStatus->CFR, DMAMUX_CFR_CSOF3);
@@ -1514,7 +1503,7 @@ __STATIC_INLINE void LL_DMAMUX_ClearFlag_SO3(const DMAMUX_Channel_TypeDef *DMAMU
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_ClearFlag_SO4(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE void LL_DMAMUX_ClearFlag_SO4(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   SET_BIT(DMAMUX1_ChannelStatus->CFR, DMAMUX_CFR_CSOF4);
@@ -1527,7 +1516,7 @@ __STATIC_INLINE void LL_DMAMUX_ClearFlag_SO4(const DMAMUX_Channel_TypeDef *DMAMU
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_ClearFlag_SO5(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE void LL_DMAMUX_ClearFlag_SO5(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   SET_BIT(DMAMUX1_ChannelStatus->CFR, DMAMUX_CFR_CSOF5);
@@ -1541,7 +1530,7 @@ __STATIC_INLINE void LL_DMAMUX_ClearFlag_SO5(const DMAMUX_Channel_TypeDef *DMAMU
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_ClearFlag_SO6(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE void LL_DMAMUX_ClearFlag_SO6(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   SET_BIT(DMAMUX1_ChannelStatus->CFR, DMAMUX_CFR_CSOF6);
@@ -1555,7 +1544,7 @@ __STATIC_INLINE void LL_DMAMUX_ClearFlag_SO6(const DMAMUX_Channel_TypeDef *DMAMU
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_ClearFlag_SO7(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE void LL_DMAMUX_ClearFlag_SO7(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   SET_BIT(DMAMUX1_ChannelStatus->CFR, DMAMUX_CFR_CSOF7);
@@ -1569,7 +1558,7 @@ __STATIC_INLINE void LL_DMAMUX_ClearFlag_SO7(const DMAMUX_Channel_TypeDef *DMAMU
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_ClearFlag_SO8(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE void LL_DMAMUX_ClearFlag_SO8(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   SET_BIT(DMAMUX1_ChannelStatus->CFR, DMAMUX_CFR_CSOF8);
@@ -1583,7 +1572,7 @@ __STATIC_INLINE void LL_DMAMUX_ClearFlag_SO8(const DMAMUX_Channel_TypeDef *DMAMU
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_ClearFlag_SO9(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE void LL_DMAMUX_ClearFlag_SO9(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   SET_BIT(DMAMUX1_ChannelStatus->CFR, DMAMUX_CFR_CSOF9);
@@ -1597,7 +1586,7 @@ __STATIC_INLINE void LL_DMAMUX_ClearFlag_SO9(const DMAMUX_Channel_TypeDef *DMAMU
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_ClearFlag_SO10(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE void LL_DMAMUX_ClearFlag_SO10(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   SET_BIT(DMAMUX1_ChannelStatus->CFR, DMAMUX_CFR_CSOF10);
@@ -1611,7 +1600,7 @@ __STATIC_INLINE void LL_DMAMUX_ClearFlag_SO10(const DMAMUX_Channel_TypeDef *DMAM
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_ClearFlag_SO11(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE void LL_DMAMUX_ClearFlag_SO11(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   SET_BIT(DMAMUX1_ChannelStatus->CFR, DMAMUX_CFR_CSOF11);
@@ -1624,7 +1613,7 @@ __STATIC_INLINE void LL_DMAMUX_ClearFlag_SO11(const DMAMUX_Channel_TypeDef *DMAM
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_ClearFlag_RGO0(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE void LL_DMAMUX_ClearFlag_RGO0(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   SET_BIT(DMAMUX1_RequestGenStatus->RGCFR, DMAMUX_RGCFR_COF0);
@@ -1636,7 +1625,7 @@ __STATIC_INLINE void LL_DMAMUX_ClearFlag_RGO0(const DMAMUX_Channel_TypeDef *DMAM
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_ClearFlag_RGO1(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE void LL_DMAMUX_ClearFlag_RGO1(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   SET_BIT(DMAMUX1_RequestGenStatus->RGCFR, DMAMUX_RGCFR_COF1);
@@ -1648,7 +1637,7 @@ __STATIC_INLINE void LL_DMAMUX_ClearFlag_RGO1(const DMAMUX_Channel_TypeDef *DMAM
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_ClearFlag_RGO2(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE void LL_DMAMUX_ClearFlag_RGO2(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   SET_BIT(DMAMUX1_RequestGenStatus->RGCFR, DMAMUX_RGCFR_COF2);
@@ -1660,7 +1649,7 @@ __STATIC_INLINE void LL_DMAMUX_ClearFlag_RGO2(const DMAMUX_Channel_TypeDef *DMAM
   * @param  DMAMUXx DMAMUXx DMAMUXx Instance
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_ClearFlag_RGO3(const DMAMUX_Channel_TypeDef *DMAMUXx)
+__STATIC_INLINE void LL_DMAMUX_ClearFlag_RGO3(DMAMUX_Channel_TypeDef *DMAMUXx)
 {
   (void)(DMAMUXx);
   SET_BIT(DMAMUX1_RequestGenStatus->RGCFR, DMAMUX_RGCFR_COF3);
@@ -1697,7 +1686,7 @@ __STATIC_INLINE void LL_DMAMUX_ClearFlag_RGO3(const DMAMUX_Channel_TypeDef *DMAM
   *         @arg @ref LL_DMAMUX_CHANNEL_11
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_EnableIT_SO(const DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel)
+__STATIC_INLINE void LL_DMAMUX_EnableIT_SO(DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel)
 {
   (void)(DMAMUXx);
   SET_BIT((DMAMUX1_Channel0 + Channel)->CCR, DMAMUX_CxCR_SOIE);
@@ -1726,7 +1715,7 @@ __STATIC_INLINE void LL_DMAMUX_EnableIT_SO(const DMAMUX_Channel_TypeDef *DMAMUXx
   *         @arg @ref LL_DMAMUX_CHANNEL_11
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_DisableIT_SO(const DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel)
+__STATIC_INLINE void LL_DMAMUX_DisableIT_SO(DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel)
 {
   (void)(DMAMUXx);
   CLEAR_BIT((DMAMUX1_Channel0 + Channel)->CCR, DMAMUX_CxCR_SOIE);
@@ -1755,7 +1744,7 @@ __STATIC_INLINE void LL_DMAMUX_DisableIT_SO(const DMAMUX_Channel_TypeDef *DMAMUX
   *         @arg @ref LL_DMAMUX_CHANNEL_11
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMAMUX_IsEnabledIT_SO(const DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel)
+__STATIC_INLINE uint32_t LL_DMAMUX_IsEnabledIT_SO(DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t Channel)
 {
   (void)(DMAMUXx);
   return (((READ_BIT((DMAMUX1_Channel0 + Channel)->CCR, DMAMUX_CxCR_SOIE)) == (DMAMUX_CxCR_SOIE)) ? 1UL : 0UL);
@@ -1772,7 +1761,7 @@ __STATIC_INLINE uint32_t LL_DMAMUX_IsEnabledIT_SO(const DMAMUX_Channel_TypeDef *
   *         @arg @ref LL_DMAMUX_REQ_GEN_3
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_EnableIT_RGO(const DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t RequestGenChannel)
+__STATIC_INLINE void LL_DMAMUX_EnableIT_RGO(DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t RequestGenChannel)
 {
   (void)(DMAMUXx);
   SET_BIT((DMAMUX1_RequestGenerator0 + RequestGenChannel)->RGCR, DMAMUX_RGxCR_OIE);
@@ -1789,7 +1778,7 @@ __STATIC_INLINE void LL_DMAMUX_EnableIT_RGO(const DMAMUX_Channel_TypeDef *DMAMUX
   *         @arg @ref LL_DMAMUX_REQ_GEN_3
   * @retval None
   */
-__STATIC_INLINE void LL_DMAMUX_DisableIT_RGO(const DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t RequestGenChannel)
+__STATIC_INLINE void LL_DMAMUX_DisableIT_RGO(DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t RequestGenChannel)
 {
   (void)(DMAMUXx);
   CLEAR_BIT((DMAMUX1_RequestGenerator0 + RequestGenChannel)->RGCR, DMAMUX_RGxCR_OIE);
@@ -1806,7 +1795,7 @@ __STATIC_INLINE void LL_DMAMUX_DisableIT_RGO(const DMAMUX_Channel_TypeDef *DMAMU
   *         @arg @ref LL_DMAMUX_REQ_GEN_3
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMAMUX_IsEnabledIT_RGO(const DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t RequestGenChannel)
+__STATIC_INLINE uint32_t LL_DMAMUX_IsEnabledIT_RGO(DMAMUX_Channel_TypeDef *DMAMUXx, uint32_t RequestGenChannel)
 {
   (void)(DMAMUXx);
   return ((READ_BIT((DMAMUX1_RequestGenerator0 + RequestGenChannel)->RGCR, DMAMUX_RGxCR_OIE) == (DMAMUX_RGxCR_OIE)) ? 1UL : 0UL);
@@ -1836,3 +1825,4 @@ __STATIC_INLINE uint32_t LL_DMAMUX_IsEnabledIT_RGO(const DMAMUX_Channel_TypeDef 
 
 #endif /* STM32G0xx_LL_DMAMUX_H */
 
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

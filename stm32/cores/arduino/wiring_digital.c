@@ -78,25 +78,17 @@ void pinMode(uint32_t ulPin, uint32_t ulMode)
 
 void digitalWrite(uint32_t ulPin, uint32_t ulVal)
 {
-  PinName p = digitalPinToPinName(ulPin);
-  if (p != NC) {
-    digitalWriteFast(p, ulVal);
-  }
+  digitalWriteFast(digitalPinToPinName(ulPin), ulVal);
 }
 
 int digitalRead(uint32_t ulPin)
 {
-  PinName p = digitalPinToPinName(ulPin);
-
-  return (p == NC) ? 0 : digitalReadFast(p);
+  return digitalReadFast(digitalPinToPinName(ulPin));
 }
 
 void digitalToggle(uint32_t ulPin)
 {
-  PinName p = digitalPinToPinName(ulPin);
-  if (p != NC) {
-    digitalToggleFast(digitalPinToPinName(ulPin));
-  }
+  digitalToggleFast(digitalPinToPinName(ulPin));
 }
 
 #ifdef __cplusplus

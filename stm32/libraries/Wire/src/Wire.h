@@ -22,8 +22,6 @@
 #ifndef TwoWire_h
 #define TwoWire_h
 
-#include <functional>
-
 #include "Stream.h"
 #include "Arduino.h"
 extern "C" {
@@ -42,10 +40,6 @@ extern "C" {
 #define WIRE_HAS_END 1
 
 class TwoWire : public Stream {
-  public:
-    typedef std::function<void(int)> cb_function_receive_t;
-    typedef std::function<void(void)> cb_function_request_t;
-
   private:
     uint8_t *rxBuffer;
     uint16_t rxBufferAllocated;
@@ -62,9 +56,8 @@ class TwoWire : public Stream {
     uint8_t ownAddress;
     i2c_t _i2c;
 
-    std::function<void(int)> user_onReceive;
-    std::function<void(void)> user_onRequest;
-
+    void (*user_onRequest)(void);
+    void (*user_onReceive)(int);
     static void onRequestService(i2c_t *);
     static void onReceiveService(i2c_t *);
 
@@ -73,11 +66,10 @@ class TwoWire : public Stream {
 
     void resetRxBuffer(void);
     void resetTxBuffer(void);
-    void recoverBus(void);
 
   public:
-    TwoWire(uint32_t sda = SDA, uint32_t scl = SCL);
-    ~TwoWire();
+    TwoWire();
+    TwoWire(uint32_t sda, uint32_t scl);
     // setSCL/SDA have to be called before begin()
     void setSCL(uint32_t scl)
     {
@@ -97,8 +89,8 @@ class TwoWire : public Stream {
     };
     void begin(bool generalCall = false);
     void begin(uint32_t, uint32_t);
-    void begin(uint8_t, bool generalCall = false, bool NoStretchMode = false);
-    void begin(int, bool generalCall = false, bool NoStretchMode = false);
+    void begin(uint8_t, bool generalCall = false);
+    void begin(int, bool generalCall = false);
     void end();
     void setClock(uint32_t);
     void beginTransmission(uint8_t);
@@ -117,9 +109,8 @@ class TwoWire : public Stream {
     virtual int read(void);
     virtual int peek(void);
     virtual void flush(void);
-
-    void onReceive(cb_function_receive_t callback);
-    void onRequest(cb_function_request_t callback);
+    void onReceive(void (*)(int));
+    void onRequest(void (*)(void));
 
     inline size_t write(unsigned long n)
     {
@@ -138,12 +129,6 @@ class TwoWire : public Stream {
       return write((uint8_t)n);
     }
     using Print::write;
-
-    // Could be used to mix Arduino API and STM32Cube HAL API (ex: DMA). Use at your own risk.
-    I2C_HandleTypeDef *getHandle(void)
-    {
-      return &(_i2c.handle);
-    }
 };
 
 

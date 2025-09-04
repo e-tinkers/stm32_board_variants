@@ -5,7 +5,7 @@
  */
 
 /*
- * @file	freertos/template/sys.c
+ * @file	generic/template/sys.c
  * @brief	machine specific system primitives implementation.
  */
 

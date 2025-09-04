@@ -6,12 +6,13 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2018 STMicroelectronics.
-  * All rights reserved.
+  * <h2><center>&copy; Copyright (c) 2018 STMicroelectronics.
+  * All rights reserved.</center></h2>
   *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
+  * This software component is licensed by ST under BSD 3-Clause license,
+  * the "License"; You may not use this file except in compliance with the
+  * License. You may obtain a copy of the License at:
+  *                        opensource.org/licenses/BSD-3-Clause
   *
   ******************************************************************************
   */
@@ -403,10 +404,10 @@ typedef struct
   *            @arg @ref RTC_FLAG_WUTF                Wakeup timer flag
   *            @arg @ref RTC_FLAG_ALRBF               Alarm B flag
   *            @arg @ref RTC_FLAG_ALRAF               Alarm A flag
-  * @retval The state of __FLAG__ (TRUE or FALSE).
+  * @retval None
   */
 #define __HAL_RTC_GET_FLAG(__HANDLE__, __FLAG__)    (((((__FLAG__)) >> 8U) == 1U) ? ((((__HANDLE__)->Instance->ICSR & (1U << (((uint16_t)(__FLAG__)) & RTC_FLAG_MASK))) != 0U) ? 1U : 0U) :\
-                                                                                    ((((__HANDLE__)->Instance->SR   & (1U << (((uint16_t)(__FLAG__)) & RTC_FLAG_MASK))) != 0U) ? 1U : 0U))
+                                                     ((((__HANDLE__)->Instance->SR & (1U << (((uint16_t)(__FLAG__)) & RTC_FLAG_MASK))) != 0U) ? 1U : 0U))
 
 /* ---------------------------------WAKEUPTIMER---------------------------------*/
 /** @defgroup RTCEx_WakeUp_Timer RTC WakeUp Timer
@@ -452,9 +453,9 @@ typedef struct
   * @param  __INTERRUPT__ specifies the RTC WakeUpTimer interrupt to check.
   *         This parameter can be:
   *            @arg @ref RTC_IT_WUT  WakeUpTimer interrupt
-  * @retval The state of __INTERRUPT__ (TRUE or FALSE).
+  * @retval None
   */
-#define __HAL_RTC_WAKEUPTIMER_GET_IT(__HANDLE__, __INTERRUPT__)       (((((__HANDLE__)->Instance->MISR) & ((__INTERRUPT__) >> 12U)) != 0U) ? 1U : 0U)
+#define __HAL_RTC_WAKEUPTIMER_GET_IT(__HANDLE__, __INTERRUPT__)       (((((__HANDLE__)->Instance->SR) & ((__INTERRUPT__)>> 12U)) != 0U) ? 1U : 0U)
 
 /**
   * @brief  Check whether the specified RTC Wake Up timer interrupt has been enabled or not.
@@ -462,7 +463,7 @@ typedef struct
   * @param  __INTERRUPT__ specifies the RTC Wake Up timer interrupt sources to check.
   *         This parameter can be:
   *            @arg @ref RTC_IT_WUT  WakeUpTimer interrupt
-  * @retval The state of __INTERRUPT__ (TRUE or FALSE).
+  * @retval None
   */
 #define __HAL_RTC_WAKEUPTIMER_GET_IT_SOURCE(__HANDLE__, __INTERRUPT__)   (((((__HANDLE__)->Instance->CR) & (__INTERRUPT__)) != 0U) ? 1U : 0U)
 
@@ -473,11 +474,9 @@ typedef struct
   *          This parameter can be:
   *             @arg @ref RTC_FLAG_WUTF
   *             @arg @ref RTC_FLAG_WUTWF
-  * @retval The state of __FLAG__ (TRUE or FALSE).
+  * @retval None
   */
-#define __HAL_RTC_WAKEUPTIMER_GET_FLAG(__HANDLE__, __FLAG__)( \
-                                ((__FLAG__) == RTC_FLAG_WUTF)  ? (((((__HANDLE__)->Instance->SR)   & (RTC_SR_WUTF))    != 0) ? 1U : 0U):\
-                                                                 (((((__HANDLE__)->Instance->ICSR) & (RTC_ICSR_WUTWF)) != 0) ? 1U : 0U))
+#define __HAL_RTC_WAKEUPTIMER_GET_FLAG(__HANDLE__, __FLAG__)   (__HAL_RTC_GET_FLAG((__HANDLE__), (__FLAG__)))
 
 /**
   * @brief  Clear the RTC Wake Up timers pending flags.
@@ -487,7 +486,7 @@ typedef struct
   *            @arg @ref RTC_FLAG_WUTF
   * @retval None
   */
-#define __HAL_RTC_WAKEUPTIMER_CLEAR_FLAG(__HANDLE__, __FLAG__)  ((__HANDLE__)->Instance->SCR |= (RTC_SCR_CWUTF))
+#define __HAL_RTC_WAKEUPTIMER_CLEAR_FLAG(__HANDLE__, __FLAG__)     (__HAL_RTC_CLEAR_FLAG((__HANDLE__), RTC_CLEAR_WUTF))
 
 /* WAKE-UP TIMER EXTI */
 /* ------------------ */
@@ -563,9 +562,9 @@ typedef struct
   * @param  __INTERRUPT__ specifies the RTC TimeStamp interrupt to check.
   *         This parameter can be:
   *            @arg @ref RTC_IT_TS TimeStamp interrupt
-  * @retval The state of __INTERRUPT__ (TRUE or FALSE).
+  * @retval None
   */
-#define __HAL_RTC_TIMESTAMP_GET_IT(__HANDLE__, __INTERRUPT__)        (((((__HANDLE__)->Instance->MISR) & ((__INTERRUPT__) >> 12U)) != 0U) ? 1U : 0U)
+#define __HAL_RTC_TIMESTAMP_GET_IT(__HANDLE__, __INTERRUPT__)        (((((__HANDLE__)->Instance->SR) & ((__INTERRUPT__)>> 12U)) != 0U) ? 1U : 0U)
 
 /**
   * @brief  Check whether the specified RTC Time Stamp interrupt has been enabled or not.
@@ -573,7 +572,7 @@ typedef struct
   * @param  __INTERRUPT__ specifies the RTC Time Stamp interrupt source to check.
   *         This parameter can be:
   *            @arg @ref RTC_IT_TS TimeStamp interrupt
-  * @retval The state of __INTERRUPT__ (TRUE or FALSE).
+  * @retval None
   */
 #define __HAL_RTC_TIMESTAMP_GET_IT_SOURCE(__HANDLE__, __INTERRUPT__)     (((((__HANDLE__)->Instance->CR) & (__INTERRUPT__)) != 0U) ? 1U : 0U)
 
@@ -584,11 +583,9 @@ typedef struct
   *         This parameter can be:
   *            @arg @ref RTC_FLAG_TSF
   *            @arg @ref RTC_FLAG_TSOVF
-  * @retval The state of __FLAG__ (TRUE or FALSE).
+  * @retval None
   */
-#define __HAL_RTC_TIMESTAMP_GET_FLAG(__HANDLE__, __FLAG__)( \
-                                ((__FLAG__) == RTC_FLAG_TSF)   ? (((((__HANDLE__)->Instance->SR) & (RTC_SR_TSF))   != 0) ? 1U : 0U):\
-                                                                 (((((__HANDLE__)->Instance->SR) & (RTC_SR_TSOVF)) != 0) ? 1U : 0U))
+#define __HAL_RTC_TIMESTAMP_GET_FLAG(__HANDLE__, __FLAG__)     (__HAL_RTC_GET_FLAG((__HANDLE__),(__FLAG__)))
 
 /**
   * @brief  Clear the RTC Time Stamps pending flags.
@@ -599,9 +596,7 @@ typedef struct
   *             @arg @ref RTC_FLAG_TSOVF
   * @retval None
   */
-#define __HAL_RTC_TIMESTAMP_CLEAR_FLAG(__HANDLE__, __FLAG__)( \
-                                ((__FLAG__) == RTC_FLAG_TSF) ? ((__HANDLE__)->Instance->SCR |= (RTC_SCR_CTSF)):\
-                                                               ((__HANDLE__)->Instance->SCR |= (RTC_SCR_CTSOVF)))
+#define __HAL_RTC_TIMESTAMP_CLEAR_FLAG(__HANDLE__, __FLAG__)   (__HAL_RTC_CLEAR_FLAG((__HANDLE__), (__FLAG__)))
 
 /**
   * @brief  Enable interrupt on the RTC Timestamp associated Exti line.
@@ -647,9 +642,9 @@ typedef struct
   * @param  __FLAG__ specifies the RTC Internal Time Stamp Flag is pending or not.
   *         This parameter can be:
   *            @arg @ref RTC_FLAG_ITSF
-  * @retval The state of __FLAG__ (TRUE or FALSE).
+  * @retval None
   */
-#define __HAL_RTC_INTERNAL_TIMESTAMP_GET_FLAG(__HANDLE__, __FLAG__)    (((((__HANDLE__)->Instance->SR) & (RTC_SR_ITSF))   != 0) ? 1U : 0U)
+#define __HAL_RTC_INTERNAL_TIMESTAMP_GET_FLAG(__HANDLE__, __FLAG__)     (__HAL_RTC_GET_FLAG((__HANDLE__),(__FLAG__)))
 
 /**
   * @brief  Clear the RTC Internal Time Stamps pending flags.
@@ -659,7 +654,7 @@ typedef struct
   *             @arg @ref RTC_FLAG_ITSF
   * @retval None
   */
-#define __HAL_RTC_INTERNAL_TIMESTAMP_CLEAR_FLAG(__HANDLE__, __FLAG__)  ((__HANDLE__)->Instance->SCR |= (RTC_SCR_CITSF))
+#define __HAL_RTC_INTERNAL_TIMESTAMP_CLEAR_FLAG(__HANDLE__, __FLAG__)     (__HAL_RTC_CLEAR_FLAG((__HANDLE__), RTC_CLEAR_ITSF))
 
 /**
   * @brief  Enable the RTC TimeStamp on Tamper detection.
@@ -736,9 +731,9 @@ typedef struct
   * @param  __FLAG__ specifies the RTC shift operation Flag is pending or not.
   *          This parameter can be:
   *             @arg @ref RTC_FLAG_SHPF
-  * @retval The state of __FLAG__ (TRUE or FALSE).
+  * @retval None
   */
-#define __HAL_RTC_SHIFT_GET_FLAG(__HANDLE__, __FLAG__)                (((((__HANDLE__)->Instance->ICSR) & (RTC_ICSR_SHPF)) != 0U) ? 1U : 0U)
+#define __HAL_RTC_SHIFT_GET_FLAG(__HANDLE__, __FLAG__)                (__HAL_RTC_GET_FLAG((__HANDLE__), (__FLAG__)))
 /**
   * @}
   */
@@ -816,9 +811,9 @@ typedef struct
   *            @arg  RTC_IT_INT_TAMP4: Internal Tamper4 interrupt
   *            @arg  RTC_IT_INT_TAMP5: Internal Tamper5 interrupt
   *            @arg  RTC_IT_INT_TAMP6: Internal Tamper6 interrupt
-  * @retval The state of __INTERRUPT__ (TRUE or FALSE).
+  * @retval None
   */
-#define __HAL_RTC_TAMPER_GET_IT(__HANDLE__, __INTERRUPT__)     ((((((TAMP_TypeDef *)((uint32_t)((__HANDLE__)->Instance) + (__HANDLE__)->TampOffset))->MISR) & (__INTERRUPT__)) != 0U) ? 1U : 0U)
+#define __HAL_RTC_TAMPER_GET_IT(__HANDLE__, __INTERRUPT__)     ((((((TAMP_TypeDef *)((uint32_t)((__HANDLE__)->Instance) + (__HANDLE__)->TampOffset))->SR) & (__INTERRUPT__)) != 0U) ? 1U : 0U)
 
 
 /**
@@ -835,7 +830,7 @@ typedef struct
   *            @arg  RTC_IT_INT_TAMP4: Internal Tamper4 interrupt
   *            @arg  RTC_IT_INT_TAMP5: Internal Tamper5 interrupt
   *            @arg  RTC_IT_INT_TAMP6: Internal Tamper6 interrupt
-  * @retval The state of __INTERRUPT__ (TRUE or FALSE).
+  * @retval None
   */
 #define __HAL_RTC_TAMPER_GET_IT_SOURCE(__HANDLE__, __INTERRUPT__)    ((((((TAMP_TypeDef *)((uint32_t)((__HANDLE__)->Instance) + (__HANDLE__)->TampOffset))->IER) & (__INTERRUPT__)) != 0U) ? 1U : 0U)
 
@@ -852,7 +847,7 @@ typedef struct
   *             @arg RTC_FLAG_INT_TAMP4: Internal Tamper4 flag
   *             @arg RTC_FLAG_INT_TAMP5: Internal Tamper5 flag
   *             @arg RTC_FLAG_INT_TAMP6: Internal Tamper6 flag
-  * @retval The state of __FLAG__ (TRUE or FALSE).
+  * @retval None
   */
 #define __HAL_RTC_TAMPER_GET_FLAG(__HANDLE__, __FLAG__)        (((((TAMP_TypeDef *)((uint32_t)((__HANDLE__)->Instance) + (__HANDLE__)->TampOffset))->SR) & (__FLAG__)) != 0U)
 
@@ -1159,3 +1154,4 @@ uint32_t          HAL_RTCEx_BKUPRead(RTC_HandleTypeDef *hrtc, uint32_t BackupReg
 
 #endif /* STM32G0xx_HAL_RTC_EX_H */
 
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

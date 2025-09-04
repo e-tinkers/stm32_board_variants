@@ -73,12 +73,14 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2018 STMicroelectronics.
-  * All rights reserved.
+  * <h2><center>&copy; Copyright (c) 2018 STMicroelectronics.
+  * All rights reserved.</center></h2>
   *
-  * This software is licensed under terms that can be found in the LICENSE file in
-  * the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
+  * This software component is licensed by ST under BSD 3-Clause license,
+  * the "License"; You may not use this file except in compliance with the
+  * License. You may obtain a copy of the License at:
+  *                        opensource.org/licenses/BSD-3-Clause
+  *
   ******************************************************************************
   */
 
@@ -458,9 +460,6 @@ HAL_StatusTypeDef HAL_FLASH_Lock(void)
 {
   HAL_StatusTypeDef status = HAL_ERROR;
 
-  /* Wait for last operation to be completed */
-  (void)FLASH_WaitForLastOperation(FLASH_TIMEOUT_VALUE);
-
   /* Set the LOCK Bit to lock the FLASH Registers access */
   SET_BIT(FLASH->CR, FLASH_CR_LOCK);
 
@@ -504,9 +503,6 @@ HAL_StatusTypeDef HAL_FLASH_OB_Unlock(void)
 HAL_StatusTypeDef HAL_FLASH_OB_Lock(void)
 {
   HAL_StatusTypeDef status = HAL_ERROR;
-
-  /* Wait for last operation to be completed */
-  (void)FLASH_WaitForLastOperation(FLASH_TIMEOUT_VALUE);
 
   /* Set the OPTLOCK Bit to lock the FLASH Option Byte Registers access */
   SET_BIT(FLASH->CR, FLASH_CR_OPTLOCK);
@@ -596,12 +592,12 @@ uint32_t HAL_FLASH_GetError(void)
 HAL_StatusTypeDef FLASH_WaitForLastOperation(uint32_t Timeout)
 {
   uint32_t error;
-  uint32_t tickstart = HAL_GetTick();
-
   /* Wait for the FLASH operation to complete by polling on BUSY flag to be reset.
      Even if the FLASH operation fails, the BUSY flag will be reset and an error
      flag will be set */
+  uint32_t timeout = HAL_GetTick() + Timeout;
 
+  /* Wait if any operation is ongoing */
 #if defined(FLASH_DBANK_SUPPORT)
   error = (FLASH_SR_BSY1 | FLASH_SR_BSY2);
 #else
@@ -610,12 +606,9 @@ HAL_StatusTypeDef FLASH_WaitForLastOperation(uint32_t Timeout)
 
   while ((FLASH->SR & error) != 0x00U)
   {
-    if(Timeout != HAL_MAX_DELAY)
+    if (HAL_GetTick() >= timeout)
     {
-      if ((HAL_GetTick() - tickstart) >= Timeout)
-      {
-        return HAL_TIMEOUT;
-      }
+      return HAL_TIMEOUT;
     }
   }
 
@@ -633,14 +626,13 @@ HAL_StatusTypeDef FLASH_WaitForLastOperation(uint32_t Timeout)
   }
 
   /* Wait for control register to be written */
+  timeout = HAL_GetTick() + Timeout;
+
   while ((FLASH->SR & FLASH_SR_CFGBSY) != 0x00U)
   {
-    if(Timeout != HAL_MAX_DELAY)
+    if (HAL_GetTick() >= timeout)
     {
-      if ((HAL_GetTick() - tickstart) >= Timeout)
-      {
-        return HAL_TIMEOUT;
-      }
+      return HAL_TIMEOUT;
     }
   }
 
@@ -728,3 +720,4 @@ static __RAM_FUNC void FLASH_Program_Fast(uint32_t Address, uint32_t DataAddress
   * @}
   */
 
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

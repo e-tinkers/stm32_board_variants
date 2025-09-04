@@ -1,25 +1,14 @@
 # See: https://arduino.github.io/arduino-cli/latest/platform-specification/
-menu.pnum=Board part number
 
+menu.pnum=Board part number
 menu.xserial=U(S)ART support
 menu.usb=USB support (if available)
 menu.xusb=USB speed (if available)
 menu.virtio=Virtual serial support
-
 menu.opt=Optimize
-menu.dbg=Debug symbols and core logs
+menu.dbg=Debug symbols
 menu.rtlib=C Runtime Library
 menu.upload_method=Upload method
-
-#menu.pnum=Board part number
-#menu.xserial=U(S)ART support
-#menu.usb=USB support (if available)
-#menu.xusb=USB speed (if available)
-#menu.virtio=Virtual serial support
-#menu.opt=Optimize
-#menu.dbg=Debug symbols
-#menu.rtlib=C Runtime Library
-#menu.upload_method=Upload method
 ################################################################################
 # Generic G0
 GenG0.name=Generic STM32G070 Series
@@ -28,20 +17,8 @@ GenG0.build.core=arduino
 GenG0.build.board=GenG0
 GenG0.build.mcu=cortex-m0plus
 GenG0.build.series=STM32G0xx
-GenG0.build.st_extra_flags=-D{build.product_line} {build.enable_usb} {build.xSerial} -D__CORTEX_SC=0
-GenG0.build.flash_offset=0x0
-GenG0.upload.maximum_size=0
-GenG0.upload.maximum_data_size=0
-GenG0.openocd.target=stm32g0x
-GenG0.vid.0=0x0483
-GenG0.pid.0=0x5740
-
-#GenG0.build.core=arduino
-#GenG0.build.board=GenG0
-#GenG0.build.mcu=cortex-m0plus
-#GenG0.build.series=STM32G0xx
-#GenG0.build.cmsis_lib_gcc=arm_cortexM0l_math
-#GenG0.build.extra_flags=-D{build.product_line} {build.enable_usb} {build.xSerial} -D__CORTEX_SC=0
+GenG0.build.cmsis_lib_gcc=arm_cortexM0l_math
+GenG0.build.extra_flags=-D{build.product_line} {build.enable_usb} {build.xSerial} -D__CORTEX_SC=0
 
 # Generic G070CBTx
 GenG0.menu.pnum.GENERIC_G070CBTX=Generic G070CBTx
@@ -50,7 +27,6 @@ GenG0.menu.pnum.GENERIC_G070CBTX.upload.maximum_data_size=36864
 GenG0.menu.pnum.GENERIC_G070CBTX.build.board=GENERIC_G070CBTX
 GenG0.menu.pnum.GENERIC_G070CBTX.build.product_line=STM32G070xx
 GenG0.menu.pnum.GENERIC_G070CBTX.build.variant=STM32G0xx/G070CBT
-GenG0.menu.pnum.GENERIC_G070CBTX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32G0xx/STM32G070.svd
 
 # Generic G070KBTx
 GenG0.menu.pnum.GENERIC_G070KBTX=Generic G070KBTx
@@ -59,7 +35,6 @@ GenG0.menu.pnum.GENERIC_G070KBTX.upload.maximum_data_size=36864
 GenG0.menu.pnum.GENERIC_G070KBTX.build.board=GENERIC_G070KBTX
 GenG0.menu.pnum.GENERIC_G070KBTX.build.product_line=STM32G070xx
 GenG0.menu.pnum.GENERIC_G070KBTX.build.variant=STM32G0xx/G070KBT
-GenG0.menu.pnum.GENERIC_G070KBTX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32G0xx/STM32G070.svd
 
 # Generic G070RBTx
 GenG0.menu.pnum.GENERIC_G070RBTX=Generic G070RBTx
@@ -68,7 +43,6 @@ GenG0.menu.pnum.GENERIC_G070RBTX.upload.maximum_data_size=36864
 GenG0.menu.pnum.GENERIC_G070RBTX.build.board=GENERIC_G070RBTX
 GenG0.menu.pnum.GENERIC_G070RBTX.build.product_line=STM32G070xx
 GenG0.menu.pnum.GENERIC_G070RBTX.build.variant=STM32G0xx/G070RBT
-GenG0.menu.pnum.GENERIC_G070RBTX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32G0xx/STM32G070.svd
 
 # TechStudio G070 Pro G070CBTx
 GenG0.menu.pnum.TECHSTUDIO_G070_PRO=TechStudio G070 Pro
@@ -78,7 +52,6 @@ GenG0.menu.pnum.TECHSTUDIO_G070_PRO.build.board=TECHSTUDIO_G070_PRO
 GenG0.menu.pnum.TECHSTUDIO_G070_PRO.build.product_line=STM32G070xx
 GenG0.menu.pnum.TECHSTUDIO_G070_PRO.build.variant=STM32G0xx/G070CBT
 GenG0.menu.pnum.TECHSTUDIO_G070_PRO.build.variant_h=variant_{build.board}.h
-GenG0.menu.pnum.GENERIC_G070RBTX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32G0xx/STM32G070.svd
 
 # TechStudio G070 Lite G070KBTx
 GenG0.menu.pnum.TECHSTUDIO_G070_LITE=TechStudio G070 Lite
@@ -88,7 +61,6 @@ GenG0.menu.pnum.TECHSTUDIO_G070_LITE.build.board=TECHSTUDIO_G070_LITE
 GenG0.menu.pnum.TECHSTUDIO_G070_LITE.build.product_line=STM32G070xx
 GenG0.menu.pnum.TECHSTUDIO_G070_LITE.build.variant=STM32G0xx/G070KBT
 GenG0.menu.pnum.TECHSTUDIO_G070_LITE.build.variant_h=variant_{build.board}.h
-GenG0.menu.pnum.GENERIC_G070RBTX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32G0xx/STM32G070.svd
 
 # PalmTop
 GenG0.menu.pnum.PALMTOP=PalmTop
@@ -98,7 +70,6 @@ GenG0.menu.pnum.PALMTOP.build.board=PALMTOP
 GenG0.menu.pnum.PALMTOP.build.product_line=STM32G070xx
 GenG0.menu.pnum.PALMTOP.build.variant=STM32G0xx/G070CBT
 GenG0.menu.pnum.PALMTOP.build.variant_h=variant_{build.board}.h
-GenG0.menu.pnum.GENERIC_G070RBTX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32G0xx/STM32G070.svd
 ################################################################################
 # Upload menu
 GenG0.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)

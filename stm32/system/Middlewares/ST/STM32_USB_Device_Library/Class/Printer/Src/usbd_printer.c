@@ -10,17 +10,6 @@
   *           - Command OUT transfer (class requests management)
   *           - Error management
   *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2021 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
   *  @verbatim
   *
   *          ===================================================================
@@ -46,6 +35,17 @@
   *             - All communication classes other than PSTN are not managed
   *
   *  @endverbatim
+  *
+  ******************************************************************************
+  * @attention
+  *
+  * <h2><center>&copy; Copyright (c) 2021 STMicroelectronics.
+  * All rights reserved.</center></h2>
+  *
+  * This software component is licensed by ST under Ultimate Liberty license
+  * SLA0044, the "License"; You may not use this file except in compliance with
+  * the License. You may obtain a copy of the License at:
+  *                     www.st.com/SLA0044
   *
   ******************************************************************************
   */
@@ -102,13 +102,27 @@ static uint8_t USBD_PRNT_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *r
 static uint8_t USBD_PRNT_DataIn(USBD_HandleTypeDef *pdev, uint8_t epnum);
 static uint8_t USBD_PRNT_DataOut(USBD_HandleTypeDef *pdev, uint8_t epnum);
 
-#ifndef USE_USBD_COMPOSITE
 static uint8_t *USBD_PRNT_GetFSCfgDesc(uint16_t *length);
 static uint8_t *USBD_PRNT_GetHSCfgDesc(uint16_t *length);
 static uint8_t *USBD_PRNT_GetOtherSpeedCfgDesc(uint16_t *length);
 static uint8_t *USBD_PRNT_GetOtherSpeedCfgDesc(uint16_t *length);
 uint8_t *USBD_PRNT_GetDeviceQualifierDescriptor(uint16_t *length);
-#endif /* USE_USBD_COMPOSITE */
+
+/* USB Standard Device Descriptor */
+__ALIGN_BEGIN static uint8_t USBD_PRNT_DeviceQualifierDesc[USB_LEN_DEV_QUALIFIER_DESC] __ALIGN_END =
+{
+  USB_LEN_DEV_QUALIFIER_DESC,
+  USB_DESC_TYPE_DEVICE_QUALIFIER,
+  0x00,
+  0x02,
+  0x00,
+  0x00,
+  0x00,
+  0x40,
+  0x01,
+  0x00,
+};
+
 /**
   * @}
   */
@@ -130,22 +144,14 @@ USBD_ClassTypeDef USBD_PRNT =
   NULL,
   NULL,
   NULL,
-#ifdef USE_USBD_COMPOSITE
-  NULL,
-  NULL,
-  NULL,
-  NULL,
-#else
   USBD_PRNT_GetHSCfgDesc,
   USBD_PRNT_GetFSCfgDesc,
   USBD_PRNT_GetOtherSpeedCfgDesc,
   USBD_PRNT_GetDeviceQualifierDescriptor,
-#endif /* USE_USBD_COMPOSITE */
 };
 
-#ifndef USE_USBD_COMPOSITE
 /* USB PRNT device Configuration Descriptor */
-__ALIGN_BEGIN static uint8_t USBD_PRNT_CfgDesc[] __ALIGN_END =
+__ALIGN_BEGIN static uint8_t USBD_PRNT_CfgHSDesc[] __ALIGN_END =
 {
   /*Configuration Descriptor*/
   0x09,                                /* bLength: Configuration Descriptor size */
@@ -159,7 +165,56 @@ __ALIGN_BEGIN static uint8_t USBD_PRNT_CfgDesc[] __ALIGN_END =
   0xC0,                                /* bmAttributes: Self Powered according to user configuration */
 #else
   0x80,                                /* bmAttributes: Bus Powered according to user configuration */
-#endif /* USBD_SELF_POWERED */
+#endif
+  USBD_MAX_POWER,                      /* MaxPower in mA */
+
+  /* Interface Descriptor */
+  0x09,                                /* bLength: Interface Descriptor size */
+  USB_DESC_TYPE_INTERFACE,             /* bDescriptorType: Interface */
+  0x00,                                /* bInterfaceNumber: Number of Interface */
+  0x00,                                /* bAlternateSetting: Alternate setting */
+  0x02,                                /* bNumEndpoints: 2 endpoints used */
+  0x07,                                /* bInterfaceClass: Communication Interface Class */
+  0x01,                                /* bInterfaceSubClass: Abstract Control Model */
+  USB_PRNT_BIDIRECTIONAL,              /* bDeviceProtocol */
+  0x00,                                /* iInterface */
+
+  /* Endpoint IN Descriptor */
+  0x07,                                /* bLength: Endpoint Descriptor size */
+  USB_DESC_TYPE_ENDPOINT,              /* bDescriptorType: Endpoint */
+  PRNT_IN_EP,                          /* bEndpointAddress */
+  0x02,                                /* bmAttributes: Bulk */
+  LOBYTE(PRNT_DATA_HS_IN_PACKET_SIZE), /* wMaxPacketSize */
+  HIBYTE(PRNT_DATA_HS_IN_PACKET_SIZE),
+  0x00,                                /* bInterval */
+
+  /* Endpoint OUT Descriptor */
+  0x07,                                /* bLength: Endpoint Descriptor size */
+  USB_DESC_TYPE_ENDPOINT,              /* bDescriptorType: Endpoint */
+  PRNT_OUT_EP,                         /* bEndpointAddress */
+  0x02,                                /* bmAttributes: Bulk */
+  LOBYTE(PRNT_DATA_HS_OUT_PACKET_SIZE),/* wMaxPacketSize */
+  HIBYTE(PRNT_DATA_HS_OUT_PACKET_SIZE),
+  0x00                                 /* bInterval */
+};
+
+
+/* USB PRNT device Configuration Descriptor */
+__ALIGN_BEGIN static uint8_t USBD_PRNT_CfgFSDesc[] __ALIGN_END =
+{
+  /*Configuration Descriptor*/
+  0x09,                                /* bLength: Configuration Descriptor size */
+  USB_DESC_TYPE_CONFIGURATION,         /* bDescriptorType: Configuration */
+  USB_PRNT_CONFIG_DESC_SIZ,            /* wTotalLength:no of returned bytes */
+  0x00,
+  0x01,                                /* bNumInterfaces: 1 interface */
+  0x01,                                /* bConfigurationValue: Configuration value */
+  0x00,                                /* iConfiguration: Index of string descriptor describing the configuration */
+#if (USBD_SELF_POWERED == 1U)
+  0xC0,                                /* bmAttributes: Self Powered according to user configuration */
+#else
+  0x80,                                /* bmAttributes: Bus Powered according to user configuration */
+#endif
   USBD_MAX_POWER,                      /* MaxPower in mA */
 
   /*Interface Descriptor */
@@ -192,24 +247,52 @@ __ALIGN_BEGIN static uint8_t USBD_PRNT_CfgDesc[] __ALIGN_END =
   0x00                                 /* bInterval */
 };
 
-/* USB Standard Device Descriptor */
-__ALIGN_BEGIN static uint8_t USBD_PRNT_DeviceQualifierDesc[USB_LEN_DEV_QUALIFIER_DESC] __ALIGN_END =
+__ALIGN_BEGIN static uint8_t USBD_PRNT_OtherSpeedCfgDesc[] __ALIGN_END =
 {
-  USB_LEN_DEV_QUALIFIER_DESC,
-  USB_DESC_TYPE_DEVICE_QUALIFIER,
+  /*Configuration Descriptor*/
+  0x09,                                /* bLength: Configuration Descriptor size */
+  USB_DESC_TYPE_CONFIGURATION,         /* bDescriptorType: Configuration */
+  USB_PRNT_CONFIG_DESC_SIZ,            /* wTotalLength:no of returned bytes */
   0x00,
-  0x02,
-  0x00,
-  0x00,
-  0x00,
-  0x40,
-  0x01,
-  0x00,
-};
-#endif /* USE_USBD_COMPOSITE */
+  0x01,                                /* bNumInterfaces: 1 interface */
+  0x01,                                /* bConfigurationValue: Configuration value */
+  0x00,                                /* iConfiguration: Index of string descriptor describing the configuration */
+#if (USBD_SELF_POWERED == 1U)
+  0xC0,                                /* bmAttributes: Self Powered according to user configuration */
+#else
+  0x80,                                /* bmAttributes: Bus Powered according to user configuration */
+#endif
+  USBD_MAX_POWER,                      /* MaxPower in mA */
 
-static uint8_t PRNTInEpAdd  = PRNT_IN_EP;
-static uint8_t PRNTOutEpAdd = PRNT_OUT_EP;
+  /*Interface Descriptor */
+  0x09,                                /* bLength: Interface Descriptor size */
+  USB_DESC_TYPE_INTERFACE,             /* bDescriptorType: Interface */
+  0x00,                                /* bInterfaceNumber: Number of Interface */
+  0x00,                                /* bAlternateSetting: Alternate setting */
+  0x02,                                /* bNumEndpoints: 2 endpoints used */
+  0x07,                                /* bInterfaceClass: Communication Interface Class */
+  0x01,                                /* bInterfaceSubClass: Abstract Control Model */
+  USB_PRNT_BIDIRECTIONAL,              /* bDeviceProtocol */
+  0x00,                                /* iInterface */
+
+  /*Endpoint IN Descriptor*/
+  0x07,                                /* bLength: Endpoint Descriptor size */
+  USB_DESC_TYPE_ENDPOINT,              /* bDescriptorType: Endpoint */
+  PRNT_IN_EP,                          /* bEndpointAddress */
+  0x02,                                /* bmAttributes: Bulk */
+  LOBYTE(PRNT_DATA_FS_IN_PACKET_SIZE), /* wMaxPacketSize */
+  HIBYTE(PRNT_DATA_FS_IN_PACKET_SIZE),
+  0x00,                                /* bInterval */
+
+  /*Endpoint OUT Descriptor*/
+  0x07,                                /* bLength: Endpoint Descriptor size */
+  USB_DESC_TYPE_ENDPOINT,              /* bDescriptorType: Endpoint */
+  PRNT_OUT_EP,                         /* bEndpointAddress */
+  0x02,                                /* bmAttributes: Bulk */
+  LOBYTE(PRNT_DATA_FS_OUT_PACKET_SIZE),/* wMaxPacketSize */
+  HIBYTE(PRNT_DATA_FS_OUT_PACKET_SIZE),
+  0x00                                 /* bInterval */
+};
 
 /**
   * @}
@@ -232,26 +315,16 @@ static uint8_t USBD_PRNT_Init(USBD_HandleTypeDef *pdev, uint8_t cfgidx)
 
   USBD_PRNT_HandleTypeDef *hPRNT;
   uint16_t mps;
-
   hPRNT = (USBD_PRNT_HandleTypeDef *)USBD_malloc(sizeof(USBD_PRNT_HandleTypeDef));
 
   if (hPRNT == NULL)
   {
-    pdev->pClassDataCmsit[pdev->classId] = NULL;
+    pdev->pClassData = NULL;
     return (uint8_t)USBD_EMEM;
   }
 
-  (void)USBD_memset(hPRNT, 0, sizeof(USBD_PRNT_HandleTypeDef));
-
   /* Setup the pClassData pointer */
-  pdev->pClassDataCmsit[pdev->classId] = (void *)hPRNT;
-  pdev->pClassData = pdev->pClassDataCmsit[pdev->classId];
-
-#ifdef USE_USBD_COMPOSITE
-  /* Get the Endpoints addresses allocated for this class instance */
-  PRNTInEpAdd  = USBD_CoreGetEPAdd(pdev, USBD_EP_IN, USBD_EP_TYPE_BULK, (uint8_t)pdev->classId);
-  PRNTOutEpAdd = USBD_CoreGetEPAdd(pdev, USBD_EP_OUT, USBD_EP_TYPE_BULK, (uint8_t)pdev->classId);
-#endif /* USE_USBD_COMPOSITE */
+  pdev->pClassData = (void *)hPRNT;
 
   /* Setup the max packet size according to selected speed */
   if (pdev->dev_speed == USBD_SPEED_HIGH)
@@ -264,29 +337,22 @@ static uint8_t USBD_PRNT_Init(USBD_HandleTypeDef *pdev, uint8_t cfgidx)
   }
 
   /* Open EP IN */
-  (void)USBD_LL_OpenEP(pdev, PRNTInEpAdd, USBD_EP_TYPE_BULK, mps);
+  (void)USBD_LL_OpenEP(pdev, PRNT_IN_EP, USBD_EP_TYPE_BULK, mps);
 
   /* Set endpoint as used */
-  pdev->ep_in[PRNTInEpAdd & 0xFU].is_used = 1U;
+  pdev->ep_in[PRNT_IN_EP & 0xFU].is_used = 1U;
 
   /* Open EP OUT */
-  (void)USBD_LL_OpenEP(pdev, PRNTOutEpAdd, USBD_EP_TYPE_BULK, mps);
+  (void)USBD_LL_OpenEP(pdev, PRNT_OUT_EP, USBD_EP_TYPE_BULK, mps);
 
   /* Set endpoint as used */
-  pdev->ep_out[PRNTOutEpAdd & 0xFU].is_used = 1U;
-
-  hPRNT->RxBuffer = NULL;
+  pdev->ep_out[PRNT_OUT_EP & 0xFU].is_used = 1U;
 
   /* Init  physical Interface components */
-  ((USBD_PRNT_ItfTypeDef *)pdev->pUserData[pdev->classId])->Init();
-
-  if (hPRNT->RxBuffer == NULL)
-  {
-    return (uint8_t)USBD_EMEM;
-  }
+  ((USBD_PRNT_ItfTypeDef *)pdev->pUserData)->Init();
 
   /* Prepare Out endpoint to receive next packet */
-  (void)USBD_LL_PrepareReceive(pdev, PRNTOutEpAdd, hPRNT->RxBuffer, mps);
+  (void)USBD_LL_PrepareReceive(pdev, PRNT_OUT_EP, hPRNT->RxBuffer, mps);
 
   /* End of initialization phase */
   return (uint8_t)USBD_OK;
@@ -303,26 +369,19 @@ static uint8_t USBD_PRNT_DeInit(USBD_HandleTypeDef *pdev, uint8_t cfgidx)
 {
   UNUSED(cfgidx);
 
-#ifdef USE_USBD_COMPOSITE
-  /* Get the Endpoints addresses allocated for this class instance */
-  PRNTInEpAdd  = USBD_CoreGetEPAdd(pdev, USBD_EP_IN, USBD_EP_TYPE_BULK, (uint8_t)pdev->classId);
-  PRNTOutEpAdd = USBD_CoreGetEPAdd(pdev, USBD_EP_OUT, USBD_EP_TYPE_BULK, (uint8_t)pdev->classId);
-#endif /* USE_USBD_COMPOSITE */
-
   /* Close EP IN */
-  (void)USBD_LL_CloseEP(pdev, PRNTInEpAdd);
-  pdev->ep_in[PRNTInEpAdd & 0xFU].is_used = 0U;
+  (void)USBD_LL_CloseEP(pdev, PRNT_IN_EP);
+  pdev->ep_in[PRNT_IN_EP & 0xFU].is_used = 0U;
 
   /* Close EP OUT */
-  (void)USBD_LL_CloseEP(pdev, PRNTOutEpAdd);
-  pdev->ep_out[PRNTOutEpAdd & 0xFU].is_used = 0U;
+  (void)USBD_LL_CloseEP(pdev, PRNT_OUT_EP);
+  pdev->ep_out[PRNT_OUT_EP & 0xFU].is_used = 0U;
 
   /* DeInit physical Interface components */
-  if (pdev->pClassDataCmsit[pdev->classId] != NULL)
+  if (pdev->pClassData != NULL)
   {
-    ((USBD_PRNT_ItfTypeDef *)pdev->pUserData[pdev->classId])->DeInit();
-    (void)USBD_free(pdev->pClassDataCmsit[pdev->classId]);
-    pdev->pClassDataCmsit[pdev->classId] = NULL;
+    ((USBD_PRNT_ItfTypeDef *)pdev->pUserData)->DeInit();
+    (void)USBD_free(pdev->pClassData);
     pdev->pClassData = NULL;
   }
 
@@ -338,8 +397,8 @@ static uint8_t USBD_PRNT_DeInit(USBD_HandleTypeDef *pdev, uint8_t cfgidx)
   */
 static uint8_t USBD_PRNT_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req)
 {
-  USBD_PRNT_HandleTypeDef *hPRNT = (USBD_PRNT_HandleTypeDef *)pdev->pClassDataCmsit[pdev->classId];
-  USBD_PRNT_ItfTypeDef    *hPRNTitf = (USBD_PRNT_ItfTypeDef *)pdev->pUserData[pdev->classId];
+  USBD_PRNT_HandleTypeDef   *hPRNT = (USBD_PRNT_HandleTypeDef *)pdev->pClassData;
+  USBD_PRNT_ItfTypeDef      *hPRNTitf = (USBD_PRNT_ItfTypeDef *)pdev->pUserData;
 
   USBD_StatusTypeDef ret = USBD_OK;
   uint16_t status_info = 0U;
@@ -436,7 +495,7 @@ static uint8_t USBD_PRNT_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *r
   */
 static uint8_t USBD_PRNT_DataIn(USBD_HandleTypeDef *pdev, uint8_t epnum)
 {
-  USBD_PRNT_HandleTypeDef *hPRNT = (USBD_PRNT_HandleTypeDef *)pdev->pClassDataCmsit[pdev->classId];
+  USBD_PRNT_HandleTypeDef *hPRNT = (USBD_PRNT_HandleTypeDef *)pdev->pClassData;
   PCD_HandleTypeDef *hpcd = pdev->pData;
 
   if (hPRNT == NULL)
@@ -444,11 +503,11 @@ static uint8_t USBD_PRNT_DataIn(USBD_HandleTypeDef *pdev, uint8_t epnum)
     return (uint8_t)USBD_FAIL;
   }
 
-  if ((pdev->ep_in[epnum & 0xFU].total_length > 0U) &&
-      ((pdev->ep_in[epnum & 0xFU].total_length % hpcd->IN_ep[epnum & 0xFU].maxpacket) == 0U))
+  if ((pdev->ep_in[epnum].total_length > 0U) &&
+      ((pdev->ep_in[epnum].total_length % hpcd->IN_ep[epnum].maxpacket) == 0U))
   {
     /* Update the packet total length */
-    pdev->ep_in[epnum & 0xFU].total_length = 0U;
+    pdev->ep_in[epnum].total_length = 0U;
 
     /* Send ZLP */
     (void) USBD_LL_Transmit(pdev, epnum, NULL, 0U);
@@ -469,7 +528,7 @@ static uint8_t USBD_PRNT_DataIn(USBD_HandleTypeDef *pdev, uint8_t epnum)
   */
 static uint8_t USBD_PRNT_DataOut(USBD_HandleTypeDef *pdev, uint8_t epnum)
 {
-  USBD_PRNT_HandleTypeDef *hPRNT = (USBD_PRNT_HandleTypeDef *)pdev->pClassDataCmsit[pdev->classId];
+  USBD_PRNT_HandleTypeDef *hPRNT = (USBD_PRNT_HandleTypeDef *)pdev->pClassData;
 
   if (hPRNT == NULL)
   {
@@ -481,12 +540,11 @@ static uint8_t USBD_PRNT_DataOut(USBD_HandleTypeDef *pdev, uint8_t epnum)
 
   /* USB data will be immediately processed, this allow next USB traffic being
   NAKed till the end of the application Xfer */
-  ((USBD_PRNT_ItfTypeDef *)pdev->pUserData[pdev->classId])->Receive(hPRNT->RxBuffer, &hPRNT->RxLength);
+  ((USBD_PRNT_ItfTypeDef *)pdev->pUserData)->Receive(hPRNT->RxBuffer, &hPRNT->RxLength);
 
   return (uint8_t)USBD_OK;
 }
 
-#ifndef USE_USBD_COMPOSITE
 /**
   * @brief  USBD_PRNT_GetFSCfgDesc
   *         Return configuration descriptor
@@ -495,21 +553,8 @@ static uint8_t USBD_PRNT_DataOut(USBD_HandleTypeDef *pdev, uint8_t epnum)
   */
 static uint8_t *USBD_PRNT_GetFSCfgDesc(uint16_t *length)
 {
-  USBD_EpDescTypeDef *pEpInDesc = USBD_GetEpDesc(USBD_PRNT_CfgDesc, PRNT_IN_EP);
-  USBD_EpDescTypeDef *pEpOutDesc = USBD_GetEpDesc(USBD_PRNT_CfgDesc, PRNT_OUT_EP);
-
-  if (pEpInDesc != NULL)
-  {
-    pEpInDesc->wMaxPacketSize = PRNT_DATA_FS_IN_PACKET_SIZE;
-  }
-
-  if (pEpOutDesc != NULL)
-  {
-    pEpOutDesc->wMaxPacketSize = PRNT_DATA_FS_OUT_PACKET_SIZE;
-  }
-
-  *length = (uint16_t) sizeof(USBD_PRNT_CfgDesc);
-  return USBD_PRNT_CfgDesc;
+  *length = (uint16_t) sizeof(USBD_PRNT_CfgFSDesc);
+  return USBD_PRNT_CfgFSDesc;
 }
 
 /**
@@ -520,21 +565,8 @@ static uint8_t *USBD_PRNT_GetFSCfgDesc(uint16_t *length)
   */
 static uint8_t *USBD_PRNT_GetHSCfgDesc(uint16_t *length)
 {
-  USBD_EpDescTypeDef *pEpInDesc = USBD_GetEpDesc(USBD_PRNT_CfgDesc, PRNT_IN_EP);
-  USBD_EpDescTypeDef *pEpOutDesc = USBD_GetEpDesc(USBD_PRNT_CfgDesc, PRNT_OUT_EP);
-
-  if (pEpInDesc != NULL)
-  {
-    pEpInDesc->wMaxPacketSize = PRNT_DATA_HS_IN_PACKET_SIZE;
-  }
-
-  if (pEpOutDesc != NULL)
-  {
-    pEpOutDesc->wMaxPacketSize = PRNT_DATA_HS_OUT_PACKET_SIZE;
-  }
-
-  *length = (uint16_t) sizeof(USBD_PRNT_CfgDesc);
-  return USBD_PRNT_CfgDesc;
+  *length = (uint16_t) sizeof(USBD_PRNT_CfgHSDesc);
+  return USBD_PRNT_CfgHSDesc;
 }
 
 /**
@@ -545,21 +577,8 @@ static uint8_t *USBD_PRNT_GetHSCfgDesc(uint16_t *length)
   */
 static uint8_t *USBD_PRNT_GetOtherSpeedCfgDesc(uint16_t *length)
 {
-  USBD_EpDescTypeDef *pEpInDesc = USBD_GetEpDesc(USBD_PRNT_CfgDesc, PRNT_IN_EP);
-  USBD_EpDescTypeDef *pEpOutDesc = USBD_GetEpDesc(USBD_PRNT_CfgDesc, PRNT_OUT_EP);
-
-  if (pEpInDesc != NULL)
-  {
-    pEpInDesc->wMaxPacketSize = PRNT_DATA_FS_IN_PACKET_SIZE;
-  }
-
-  if (pEpOutDesc != NULL)
-  {
-    pEpOutDesc->wMaxPacketSize = PRNT_DATA_FS_OUT_PACKET_SIZE;
-  }
-
-  *length = (uint16_t) sizeof(USBD_PRNT_CfgDesc);
-  return USBD_PRNT_CfgDesc;
+  *length = (uint16_t) sizeof(USBD_PRNT_OtherSpeedCfgDesc);
+  return USBD_PRNT_OtherSpeedCfgDesc;
 }
 
 /**
@@ -573,7 +592,6 @@ uint8_t *USBD_PRNT_GetDeviceQualifierDescriptor(uint16_t *length)
   *length = (uint16_t)sizeof(USBD_PRNT_DeviceQualifierDesc);
   return USBD_PRNT_DeviceQualifierDesc;
 }
-#endif /* USE_USBD_COMPOSITE */
 
 /**
   * @brief  USBD_PRNT_RegisterInterface
@@ -590,7 +608,7 @@ uint8_t USBD_PRNT_RegisterInterface(USBD_HandleTypeDef *pdev, USBD_PRNT_ItfTypeD
   }
 
   /* Setup the fops pointer */
-  pdev->pUserData[pdev->classId] = fops;
+  pdev->pUserData = fops;
 
   return (uint8_t)USBD_OK;
 }
@@ -603,7 +621,7 @@ uint8_t USBD_PRNT_RegisterInterface(USBD_HandleTypeDef *pdev, USBD_PRNT_ItfTypeD
   */
 uint8_t USBD_PRNT_SetRxBuffer(USBD_HandleTypeDef *pdev, uint8_t *pbuff)
 {
-  USBD_PRNT_HandleTypeDef *hPRNT = (USBD_PRNT_HandleTypeDef *) pdev->pClassDataCmsit[pdev->classId];
+  USBD_PRNT_HandleTypeDef *hPRNT = (USBD_PRNT_HandleTypeDef *) pdev->pClassData;
 
   hPRNT->RxBuffer = pbuff;
 
@@ -618,13 +636,7 @@ uint8_t USBD_PRNT_SetRxBuffer(USBD_HandleTypeDef *pdev, uint8_t *pbuff)
   */
 uint8_t USBD_PRNT_ReceivePacket(USBD_HandleTypeDef *pdev)
 {
-  USBD_PRNT_HandleTypeDef *hPRNT = (USBD_PRNT_HandleTypeDef *)pdev->pClassDataCmsit[pdev->classId];
-
-#ifdef USE_USBD_COMPOSITE
-  /* Get the Endpoints addresses allocated for this class instance */
-  PRNTInEpAdd  = USBD_CoreGetEPAdd(pdev, USBD_EP_IN, USBD_EP_TYPE_BULK, (uint8_t)pdev->classId);
-  PRNTOutEpAdd = USBD_CoreGetEPAdd(pdev, USBD_EP_OUT, USBD_EP_TYPE_BULK, (uint8_t)pdev->classId);
-#endif /* USE_USBD_COMPOSITE */
+  USBD_PRNT_HandleTypeDef *hPRNT = (USBD_PRNT_HandleTypeDef *)pdev->pClassData;
 
   if (hPRNT == NULL)
   {
@@ -634,19 +646,18 @@ uint8_t USBD_PRNT_ReceivePacket(USBD_HandleTypeDef *pdev)
   if (pdev->dev_speed == USBD_SPEED_HIGH)
   {
     /* Prepare Out endpoint to receive next packet */
-    (void)USBD_LL_PrepareReceive(pdev, PRNTOutEpAdd, hPRNT->RxBuffer,
+    (void)USBD_LL_PrepareReceive(pdev, PRNT_OUT_EP, hPRNT->RxBuffer,
                                  PRNT_DATA_HS_OUT_PACKET_SIZE);
   }
   else
   {
     /* Prepare Out endpoint to receive next packet */
-    (void)USBD_LL_PrepareReceive(pdev, PRNTOutEpAdd, hPRNT->RxBuffer,
+    (void)USBD_LL_PrepareReceive(pdev, PRNT_OUT_EP, hPRNT->RxBuffer,
                                  PRNT_DATA_FS_OUT_PACKET_SIZE);
   }
 
   return (uint8_t)USBD_OK;
 }
-
 /**
   * @}
   */
@@ -658,3 +669,5 @@ uint8_t USBD_PRNT_ReceivePacket(USBD_HandleTypeDef *pdev)
 /**
   * @}
   */
+
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

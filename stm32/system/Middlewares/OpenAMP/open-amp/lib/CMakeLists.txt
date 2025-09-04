@@ -13,7 +13,6 @@ add_subdirectory (remoteproc)
 
 if (WITH_PROXY)
   add_subdirectory (proxy)
-  add_subdirectory (service/rpmsg/rpc)
 endif (WITH_PROXY)
 
 set (OPENAMP_LIB open_amp)

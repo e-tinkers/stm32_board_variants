@@ -129,11 +129,6 @@ size_t Print::print(unsigned long long n, int base)
   }
 }
 
-size_t Print::print(float n, int digits)
-{
-  return printFloat(n, digits);
-}
-
 size_t Print::print(double n, int digits)
 {
   return printFloat(n, digits);
@@ -226,13 +221,6 @@ size_t Print::println(unsigned long long num, int base)
   return n;
 }
 
-size_t Print::println(float num, int digits)
-{
-  size_t n = print(num, digits);
-  n += println();
-  return n;
-}
-
 size_t Print::println(double num, int digits)
 {
   size_t n = print(num, digits);
@@ -288,17 +276,6 @@ int Print::printf(const __FlashStringHelper *format, ...)
   va_end(ap);
   return retval;
 }
-
-int Print::vprintf(const char *format, va_list ap)
-{
-  return vdprintf((int)this, format, ap);
-}
-
-int Print::vprintf(const __FlashStringHelper *format, va_list ap)
-{
-  return vdprintf((int)this, (const char *)format, ap);
-}
-
 
 // Private Methods /////////////////////////////////////////////////////////////
 
@@ -374,58 +351,51 @@ size_t Print::printULLNumber(unsigned long long n64, uint8_t base)
   char buf[64];
   uint8_t i = 0;
   uint8_t innerLoops = 0;
-  size_t bytes = 0;
 
-  // Special case workaround https://github.com/arduino/ArduinoCore-API/issues/178
-  if (n64 == 0) {
-    write('0');
-    bytes = 1;
-  } else {
-    // prevent crash if called with base == 1
-    if (base < 2) {
-      base = 10;
-    }
+  // prevent crash if called with base == 1
+  if (base < 2) {
+    base = 10;
+  }
 
-    // process chunks that fit in "16 bit math".
-    uint16_t top = 0xFFFF / base;
-    uint16_t th16 = 1;
-    while (th16 < top) {
-      th16 *= base;
-      innerLoops++;
-    }
+  // process chunks that fit in "16 bit math".
+  uint16_t top = 0xFFFF / base;
+  uint16_t th16 = 1;
+  while (th16 < top) {
+    th16 *= base;
+    innerLoops++;
+  }
 
-    while (n64 > th16) {
-      // 64 bit math part
-      uint64_t q = n64 / th16;
-      uint16_t r = n64 - q * th16;
-      n64 = q;
+  while (n64 > th16) {
+    // 64 bit math part
+    uint64_t q = n64 / th16;
+    uint16_t r = n64 - q * th16;
+    n64 = q;
 
-      // 16 bit math loop to do remainder. (note buffer is filled reverse)
-      for (uint8_t j = 0; j < innerLoops; j++) {
-        uint16_t qq = r / base;
-        buf[i++] = r - qq * base;
-        r = qq;
-      }
+    // 16 bit math loop to do remainder. (note buffer is filled reverse)
+    for (uint8_t j = 0; j < innerLoops; j++) {
+      uint16_t qq = r / base;
+      buf[i++] = r - qq * base;
+      r = qq;
     }
+  }
 
-    uint16_t n16 = n64;
-    while (n16 > 0) {
-      uint16_t qq = n16 / base;
-      buf[i++] = n16 - qq * base;
-      n16 = qq;
-    }
-    bytes = i;
-    for (; i > 0; i--) {
-      write((char)(buf[i - 1] < 10 ?
-                   '0' + buf[i - 1] :
-                   'A' + buf[i - 1] - 10));
-    }
+  uint16_t n16 = n64;
+  while (n16 > 0) {
+    uint16_t qq = n16 / base;
+    buf[i++] = n16 - qq * base;
+    n16 = qq;
+  }
+
+  size_t bytes = i;
+  for (; i > 0; i--) {
+    write((char)(buf[i - 1] < 10 ?
+                 '0' + buf[i - 1] :
+                 'A' + buf[i - 1] - 10));
   }
   return bytes;
 }
 
-template <class T>
-size_t Print::printFloat(T number, uint8_t digits)
+size_t Print::printFloat(double number, uint8_t digits)
 {
   size_t n = 0;
 
@@ -449,7 +419,7 @@ size_t Print::printFloat(T number, uint8_t digits)
   }
 
   // Round correctly so that print(1.999, 2) prints as "2.00"
-  T rounding = 0.5;
+  double rounding = 0.5;
   for (uint8_t i = 0; i < digits; ++i) {
     rounding /= 10.0;
   }
@@ -458,7 +428,7 @@ size_t Print::printFloat(T number, uint8_t digits)
 
   // Extract the integer part of the number and print it
   unsigned long int_part = (unsigned long)number;
-  T remainder = number - (T)int_part;
+  double remainder = number - (double)int_part;
   n += print(int_part);
 
   // Print the decimal point, but only if there are digits beyond

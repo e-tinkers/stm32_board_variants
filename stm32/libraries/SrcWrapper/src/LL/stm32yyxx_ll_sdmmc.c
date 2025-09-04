@@ -10,8 +10,6 @@
   #include "stm32f4xx_ll_sdmmc.c"
 #elif STM32F7xx
   #include "stm32f7xx_ll_sdmmc.c"
-#elif STM32H5xx
-  #include "stm32h5xx_ll_sdmmc.c"
 #elif STM32H7xx
   #include "stm32h7xx_ll_sdmmc.c"
 #elif STM32L1xx
@@ -22,8 +20,6 @@
   #include "stm32l5xx_ll_sdmmc.c"
 #elif STM32MP1xx
   #include "stm32mp1xx_ll_sdmmc.c"
-#elif STM32U3xx
-  #include "stm32u3xx_ll_sdmmc.c"
 #elif STM32U5xx
   #include "stm32u5xx_ll_sdmmc.c"
 #endif

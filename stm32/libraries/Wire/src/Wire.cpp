@@ -33,25 +33,16 @@ static const uint8_t MASTER_ADDRESS = 0x01;
 
 // Constructors ////////////////////////////////////////////////////////////////
 
-TwoWire::TwoWire(uint32_t sda, uint32_t scl)
+TwoWire::TwoWire()
 {
-  memset((void *)&_i2c, 0, sizeof(_i2c));
-  _i2c.sda = digitalPinToPinName(sda);
-  _i2c.scl = digitalPinToPinName(scl);
-
-  txBuffer = nullptr;
-  txBufferAllocated = 0;
-  rxBuffer = nullptr;
-  rxBufferAllocated = 0;
+  _i2c.sda = digitalPinToPinName(SDA);
+  _i2c.scl = digitalPinToPinName(SCL);
 }
 
-/**
-  * @brief  TwoWire destructor
-  * @retval None
-  */
-TwoWire::~TwoWire()
+TwoWire::TwoWire(uint32_t sda, uint32_t scl)
 {
-  end();
+  _i2c.sda = digitalPinToPinName(sda);
+  _i2c.scl = digitalPinToPinName(scl);
 }
 
 // Public Methods //////////////////////////////////////////////////////////////
@@ -68,14 +59,18 @@ void TwoWire::begin(bool generalCall)
   begin(MASTER_ADDRESS, generalCall);
 }
 
-void TwoWire::begin(uint8_t address, bool generalCall, bool NoStretchMode)
+void TwoWire::begin(uint8_t address, bool generalCall)
 {
   rxBufferIndex = 0;
   rxBufferLength = 0;
+  rxBuffer = nullptr;
+  rxBufferAllocated = 0;
   resetRxBuffer();
 
   txDataSize = 0;
   txAddress = 0;
+  txBuffer = nullptr;
+  txBufferAllocated = 0;
   resetTxBuffer();
 
   _i2c.__this = (void *)this;
@@ -88,11 +83,7 @@ void TwoWire::begin(uint8_t address, bool generalCall, bool NoStretchMode)
 
   _i2c.generalCall = (generalCall == true) ? 1 : 0;
 
-  _i2c.NoStretchMode = (NoStretchMode == true) ? 1 : 0;
-
-  recoverBus(); // in case I2C bus (device) is stuck after a reset for example
-
-  i2c_init(&_i2c, 100000, ownAddress);
+  i2c_custom_init(&_i2c, 100000, I2C_ADDRESSINGMODE_7BIT, ownAddress);
 
   if (_i2c.isMaster == 0) {
     // i2c_attachSlaveTxEvent(&_i2c, reinterpret_cast<void(*)(i2c_t*)>(&TwoWire::onRequestService));
@@ -103,33 +94,25 @@ void TwoWire::begin(uint8_t address, bool generalCall, bool NoStretchMode)
   }
 }
 
-void TwoWire::begin(int address, bool generalCall, bool NoStretchMode)
+void TwoWire::begin(int address, bool generalCall)
 {
-  begin((uint8_t)address, generalCall, NoStretchMode);
+  begin((uint8_t)address, generalCall);
 }
 
 void TwoWire::end(void)
 {
   i2c_deinit(&_i2c);
-  if (txBuffer != nullptr) {
-    free(txBuffer);
-    txBuffer = nullptr;
-  }
+  free(txBuffer);
+  txBuffer = nullptr;
   txBufferAllocated = 0;
-  if (rxBuffer != nullptr) {
-    free(rxBuffer);
-    rxBuffer = nullptr;
-  }
+  free(rxBuffer);
+  rxBuffer = nullptr;
   rxBufferAllocated = 0;
 }
 
 void TwoWire::setClock(uint32_t frequency)
 {
   i2c_setTiming(&_i2c, frequency);
-  if (_i2c.isMaster == 0) {
-    i2c_attachSlaveTxEvent(&_i2c, onRequestService);
-    i2c_attachSlaveRxEvent(&_i2c, onReceiveService);
-  }
 }
 
 uint8_t TwoWire::requestFrom(uint8_t address, uint8_t quantity, uint32_t iaddress, uint8_t isize, uint8_t sendStop)
@@ -447,13 +430,13 @@ void TwoWire::onRequestService(i2c_t *obj)
 }
 
 // sets function called on slave write
-void TwoWire::onReceive(cb_function_receive_t function)
+void TwoWire::onReceive(void (*function)(int))
 {
   user_onReceive = function;
 }
 
 // sets function called on slave read
-void TwoWire::onRequest(cb_function_request_t function)
+void TwoWire::onRequest(void (*function)(void))
 {
   user_onRequest = function;
 }
@@ -515,28 +498,6 @@ inline void TwoWire::resetTxBuffer(void)
 {
   if (txBuffer != nullptr) {
     memset(txBuffer, 0, txBufferAllocated);
-  }
-}
-
-// Send clear bus (clock pulse) sequence to recover bus.
-// Useful in case of bus stuck after a reset for example
-// a mix implementation of Clear Bus from
-// https://www.nxp.com/docs/en/user-guide/UM10204.pdf
-// https://bits4device.wordpress.com/2017/07/28/i2c-bus-recovery/
-void TwoWire::recoverBus(void)
-{
-  pinMode(pinNametoDigitalPin(_i2c.sda), INPUT);
-
-  if (digitalReadFast(_i2c.sda) == LOW) {
-    pinMode(pinNametoDigitalPin(_i2c.scl), OUTPUT);
-
-    for (int i = 0; i < 20; i++) {
-      digitalWriteFast(_i2c.scl, LOW);
-      delayMicroseconds(10);
-      digitalWriteFast(_i2c.scl, HIGH);
-      delayMicroseconds(10);
-    }
-    pinMode(pinNametoDigitalPin(_i2c.scl), INPUT);
   }
 }
 

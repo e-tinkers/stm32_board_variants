@@ -1,14 +1,16 @@
-# Custom STM32G070 Board supports for Arduino IDE
+# TechStudio G070 Boards Arduino IDE configuration
 
-This repo contains custom board configuration for 
+This repo contains the board configuration for 
  * TechStudio G070 Boards
  * [PalmTop](https://github.com/e-tinkers/palmtop) board 
 
+> For more details on the usage of these custom boards, please refer to [blog 
+post](https://www.e-tinkers.com/2023/06/build-a-palmtop-handheld-with-stm32g070) on 
+e-tinkers.com.
+
 on Arudino IDE based on ST Microelectronics' official [Arduino Core STM32](https://github.com/stm32duino/Arduino_Core_STM32).
 
-The Generic variants for G070KBT/G070CBT has been part of the Arduino Core STM32 releasee version 2.3.0 as per my [Pull Request](https://github.com/stm32duino/Arduino_Core_STM32/pull/1638) and is officially roll-in as part of the release 2.4.0.  However, for my own projects, such as [Palmtop](https://www.e-tinkers.com/2023/06/build-a-palmtop-handheld-with-stm32g070)), it is not appropriate to do a pull request to add the board support that no one is going to use execpt only me, therefore, this repository is add the my personal custom boards to the Arduino IDE.
-
-**Update:** The core of the STM32 Arduino has been updated from v2.2.0 to v2.10.1 in 29 Aug, 2025.
+The Generic variants for G070KBT/G070CBT has been part of the Arduino Core STM32 releasee version 2.3.0 as per my [Pull Request](https://github.com/stm32duino/Arduino_Core_STM32/pull/1638) and is officially roll-in as part of the release 2.4.0.  For custom boards, this repository is required to be placed in hardware directory within Arduino IDE environment.
 
 ## Installation
 
@@ -16,7 +18,7 @@ The Generic variants for G070KBT/G070CBT has been part of the Arduino Core STM32
 
 - Quit the Arduino IDE.
 
-- Clone this github into your Arduino hardware environment by creating a **hardware** directory. The custom board configuation requires to be placed in `$HOME/Arduino/hardware` directory.
+- Clone this github into your Arduino hardware environment by creating a **hardware** directory.
 
 ```
     $ mkdir -p $HOME/Arduino/hardware

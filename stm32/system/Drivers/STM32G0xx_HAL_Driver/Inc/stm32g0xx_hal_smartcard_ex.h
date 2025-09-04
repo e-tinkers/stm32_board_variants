@@ -6,12 +6,13 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2018 STMicroelectronics.
-  * All rights reserved.
+  * <h2><center>&copy; Copyright (c) 2018 STMicroelectronics.
+  * All rights reserved.</center></h2>
   *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
+  * This software component is licensed by ST under BSD 3-Clause license,
+  * the "License"; You may not use this file except in compliance with the
+  * License. You may obtain a copy of the License at:
+  *                        opensource.org/licenses/BSD-3-Clause
   *
   ******************************************************************************
   */
@@ -247,7 +248,7 @@ extern "C" {
     }                                                          \
     else if((__HANDLE__)->Instance == USART3)                  \
     {                                                          \
-      switch(__HAL_RCC_GET_USART3_SOURCE())                    \
+      switch(__HAL_RCC_GET_USART2_SOURCE())                    \
       {                                                        \
         case RCC_USART3CLKSOURCE_PCLK1:                        \
           (__CLOCKSOURCE__) = SMARTCARD_CLOCKSOURCE_PCLK1;     \
@@ -490,3 +491,4 @@ HAL_StatusTypeDef HAL_SMARTCARDEx_SetRxFifoThreshold(SMARTCARD_HandleTypeDef *hs
 
 #endif /* STM32G0xx_HAL_SMARTCARD_EX_H */
 
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -12,8 +12,6 @@
 #ifndef __METAL_SOFTIRQ__H__
 #define __METAL_SOFTIRQ__H__
 
-#include <metal/irq.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -21,6 +19,8 @@ extern "C" {
 /** \defgroup soft irq Interrupt Handling Interfaces
  *  @{
  */
+
+#include <metal/irq.h>
 
 /**
  * @brief	metal_softirq_init
